@@ -21,7 +21,7 @@ public class Game {
         this.factions = new Faction[2];
         String userFactionName = factionNameSelection();
         String enemyFactionName = getRandomFactionName();
-        int size = getWorld().determineSize(mapSize); // I DONT LIKE THIS!
+        int size = MapSize.determineSize(mapSize);
         createFactions(userFactionName, enemyFactionName, size);
         System.out.println("You shall face the " + enemyFactionName + "!");
         getScanner().close();
@@ -42,7 +42,7 @@ public class Game {
         System.out.println("L: 8x8 grid");
         char choice = 'Z';
         while(choice != 'S' && choice != 'M' && choice != 'L'){
-            System.out.println("Enter your desired map size:");
+            System.out.println("Enter your desired map size.");
             choice = getScanner().next().charAt(0);
         }
         return choice;

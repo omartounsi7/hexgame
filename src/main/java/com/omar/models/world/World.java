@@ -6,7 +6,7 @@ public class World {
     private final Map<Integer, Set<Integer>> adjacencyMatrix;
     private final Tile[] tiles;
     public World(MapSize mapsize) {
-        int size = determineSize(mapsize);
+        int size = MapSize.determineSize(mapsize);
         this.adjacencyMatrix = new HashMap<>();
         this.tiles = new Tile[size * size];
         createTiles(size);
@@ -33,10 +33,10 @@ public class World {
     }
     public void linkNeighboringTiles(int size){
         for(int i = 0 ; i < size * size ; i++){
-            int south = i - size;
             int north = i + size;
-            int west = i + 1;
+            int south = i - size;
             int east = i - 1;
+            int west = i + 1;
 
             if(north < size * size){
                 addEdge(i, north);
@@ -52,7 +52,6 @@ public class World {
             }
 
             if (i % 2 == 0) {
-                // Even case
                 int northEast = i + size - 1;
                 int northWest = i + size + 1;
 
@@ -65,7 +64,6 @@ public class World {
                     }
                 }
             } else {
-                // Odd case
                 int southEast = i - size - 1;
                 int southWest = i - size + 1;
 
@@ -80,22 +78,15 @@ public class World {
             }
         }
     }
-    public int determineSize(MapSize mapsize){
-        return switch (mapsize) {
-            case SMALL -> 4;
-            case MEDIUM -> 6;
-            case LARGE -> 8;
-        };
-    }
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (int v : adjacencyMatrix.keySet()) {
-            builder.append(v).append(": ");
+            builder.append("{").append(v).append("}").append(": { ");
             for (int w : adjacencyMatrix.get(v)) {
-                builder.append(w).append(" ");
+                builder.append(w).append(", ");
             }
-            builder.append("\n");
+            builder.append("}\n");
         }
         return (builder.toString());
     }
