@@ -11,4 +11,8 @@ public class Army {
     public void setFirepower(int firepower) {
         this.firepower = firepower;
     }
+    @Override
+    public String toString() {
+        return "{" + firepower + "}";
+    }
 }
