@@ -3,7 +3,9 @@ package com.omar.models.game;
 import com.omar.models.faction.Faction;
 import com.omar.models.map.MapSize;
 import com.omar.models.map.World;
+import com.omar.resources.FactionNames;
 
+import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
@@ -27,9 +29,9 @@ public class Game {
         this.world = new World(mapSize);
         this.factions = new Faction[2];
         String userFactionName = factionNameSelection();
-        String enemyFactionName = "Vermilion Guild";
+        String enemyFactionName = getRandomFactionName();
         createFactions(userFactionName, enemyFactionName);
-        System.out.println("You shall face off against the " + enemyFactionName + "!");
+        System.out.println("You shall face the " + enemyFactionName + "!");
         getScanner().close();
     }
     public char mapSizeSelection(){
@@ -64,5 +66,10 @@ public class Game {
     public void createFactions(String userFactionName, String enemyFactionName){
         factions[0] = new Faction(userFactionName);
         factions[1] = new Faction(enemyFactionName);
+    }
+    public String getRandomFactionName(){
+        Random random = new Random();
+        int randomFactionIndex = random.nextInt(FactionNames.factionNames.length);
+        return FactionNames.factionNames[randomFactionIndex];
     }
 }
