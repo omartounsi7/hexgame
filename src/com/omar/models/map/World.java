@@ -5,6 +5,13 @@ import java.util.*;
 public class World {
     private final Map<Tile, Set<Tile>> map;
     private final Tile[] tiles;
+    public World(MapSize mapsize) {
+        int size = determineSize(mapsize);
+        this.map = new HashMap<>();
+        this.tiles = new Tile[size * size];
+        createTiles(size);
+        linkNeighboringTiles(size);
+    }
     public Tile getTile(int number) {
         return tiles[number];
     }
@@ -73,21 +80,12 @@ public class World {
             }
         }
     }
-    // MUST USE AN EVEN NUMBER AS SIZE
-    // AN ODD NUMBER WILL BREAK THE MAP!
     public int determineSize(MapSize mapsize){
         return switch (mapsize) {
             case SMALL -> 4;
             case MEDIUM -> 6;
             case LARGE -> 8;
         };
-    }
-    public World(MapSize mapsize) {
-        int size = determineSize(mapsize);
-        this.map = new HashMap<>();
-        this.tiles = new Tile[size * size];
-        createTiles(size);
-        linkNeighboringTiles(size);
     }
     @Override
     public String toString() {
