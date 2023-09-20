@@ -12,6 +12,9 @@ public class World {
         createTiles(size);
         linkNeighboringTiles(size);
     }
+    public Map<Integer, Set<Integer>> getAdjacencyMatrix() {
+        return adjacencyMatrix;
+    }
     public Tile getTile(int number) {
         return tiles[number];
     }
