@@ -1,8 +1,8 @@
 package com.omar.models.game;
 
 import com.omar.models.faction.Faction;
-import com.omar.models.map.MapSize;
-import com.omar.models.map.World;
+import com.omar.models.world.MapSize;
+import com.omar.models.world.World;
 import com.omar.resources.FactionNames;
 
 import java.util.Random;
