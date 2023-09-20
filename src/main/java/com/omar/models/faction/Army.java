@@ -2,8 +2,16 @@ package com.omar.models.faction;
 
 public class Army {
     private int firepower;
-    public Army(int firepower) {
+    private int position;
+    public Army(int firepower, int position) {
         this.firepower = firepower;
+        this.position = position;
+    }
+    public int getPosition() {
+        return position;
+    }
+    public void setPosition(int position) {
+        this.position = position;
     }
     public int getFirepower() {
         return firepower;
@@ -13,6 +21,6 @@ public class Army {
     }
     @Override
     public String toString() {
-        return "{" + firepower + "}";
+        return "[FP=" + firepower + ", POS=" + position + "]";
     }
 }
