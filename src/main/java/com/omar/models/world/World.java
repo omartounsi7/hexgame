@@ -3,11 +3,11 @@ package com.omar.models.world;
 import java.util.*;
 
 public class World {
-    private final Map<Tile, Set<Tile>> map;
+    private final Map<Integer, Set<Integer>> adjacencyMatrix;
     private final Tile[] tiles;
     public World(MapSize mapsize) {
         int size = determineSize(mapsize);
-        this.map = new HashMap<>();
+        this.adjacencyMatrix = new HashMap<>();
         this.tiles = new Tile[size * size];
         createTiles(size);
         linkNeighboringTiles(size);
@@ -15,20 +15,20 @@ public class World {
     public Tile getTile(int number) {
         return tiles[number];
     }
-    public Set<Tile> getTileNeighbors(int number) {
-        return map.get(tiles[number]);
+    public Set<Integer> getTileNeighbors(int number) {
+        return adjacencyMatrix.get(number);
     }
-    public void addVertex(Tile t) {
-        map.put(t, new HashSet<>());
+    public void addVertex(int v) {
+        adjacencyMatrix.put(v, new HashSet<>());
     }
-    public void addEdge(Tile a, Tile b) {
-        map.get(a).add(b);
-        map.get(b).add(a);
+    public void addEdge(int a, int b) {
+        adjacencyMatrix.get(a).add(b);
+        adjacencyMatrix.get(b).add(a);
     }
     public void createTiles(int size){
         for(int i = 0 ; i < size * size ; i++){
             tiles[i] = new Tile(i);
-            addVertex(tiles[i]);
+            addVertex(i);
         }
     }
     public void linkNeighboringTiles(int size){
@@ -39,16 +39,16 @@ public class World {
             int east = i - 1;
 
             if(north < size * size){
-                addEdge(getTile(i), getTile(north));
+                addEdge(i, north);
             }
             if(south >= 0){
-                addEdge(getTile(i), getTile(south));
+                addEdge(i, south);
             }
             if(i % size != 0){
-                addEdge(getTile(i), getTile(east));
+                addEdge(i, east);
             }
             if(i % size != size - 1){
-                addEdge(getTile(i), getTile(west));
+                addEdge(i, west);
             }
 
             if (i % 2 == 0) {
@@ -58,10 +58,10 @@ public class World {
 
                 if (north < size * size) {
                     if (i % size != 0) {
-                        addEdge(getTile(i), getTile(northEast));
+                        addEdge(i, northEast);
                     }
                     if (i % size != size - 1) {
-                        addEdge(getTile(i), getTile(northWest));
+                        addEdge(i, northWest);
                     }
                 }
             } else {
@@ -71,10 +71,10 @@ public class World {
 
                 if (south >= 0) {
                     if (i % size != 0) {
-                        addEdge(getTile(i), getTile(southEast));
+                        addEdge(i, southEast);
                     }
                     if (i % size != size - 1) {
-                        addEdge(getTile(i), getTile(southWest));
+                        addEdge(i, southWest);
                     }
                 }
             }
@@ -90,10 +90,10 @@ public class World {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for (Tile v : map.keySet()) {
-            builder.append(v.toString()).append(": ");
-            for (Tile w : map.get(v)) {
-                builder.append(w.toString()).append(" ");
+        for (int v : adjacencyMatrix.keySet()) {
+            builder.append(v).append(": ");
+            for (int w : adjacencyMatrix.get(v)) {
+                builder.append(w).append(" ");
             }
             builder.append("\n");
         }
