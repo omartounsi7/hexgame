@@ -17,8 +17,8 @@ public class Game {
         this.scanner = new Scanner(System.in);
         char choice = mapSizeSelection();
         MapSize mapSize = getMapSize(choice);
-        this.world = new World(mapSize);
-        this.factions = new Faction[2];
+        this.world = new World(mapSize); // THIS ONE
+        this.factions = new Faction[2]; // AND THIS ONE
         String userFactionName = factionNameSelection();
         String enemyFactionName = getRandomFactionName();
         int size = getWorld().determineSize(mapSize);
