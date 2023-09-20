@@ -21,20 +21,20 @@ public class World {
     public Set<Integer> getTileNeighbors(int number) {
         return adjacencyMatrix.get(number);
     }
-    public void addVertex(int v) {
+    private void addVertex(int v) {
         adjacencyMatrix.put(v, new HashSet<>());
     }
-    public void addEdge(int a, int b) {
+    private void addEdge(int a, int b) {
         adjacencyMatrix.get(a).add(b);
         adjacencyMatrix.get(b).add(a);
     }
-    public void createTiles(int size){
+    private void createTiles(int size){
         for(int i = 0 ; i < size * size ; i++){
             tiles[i] = new Tile(i);
             addVertex(i);
         }
     }
-    public void linkNeighboringTiles(int size){
+    private void linkNeighboringTiles(int size){
         for(int i = 0 ; i < size * size ; i++){
             int north = i + size;
             int south = i - size;

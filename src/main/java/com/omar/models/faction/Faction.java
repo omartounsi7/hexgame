@@ -14,7 +14,7 @@ public class Faction {
     public String getName() {
         return name;
     }
-    public void initArmies(int startingPos){
+    private void initArmies(int startingPos){
         armies.put(new Army(10), startingPos);
     }
     @Override
