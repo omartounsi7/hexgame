@@ -1,8 +1,8 @@
 package com.omar.models.game;
 
 import com.omar.models.faction.Faction;
-import com.omar.models.map.MapSize;
-import com.omar.models.map.World;
+import com.omar.models.world.MapSize;
+import com.omar.models.world.World;
 import com.omar.resources.FactionNames;
 
 import java.util.Random;
@@ -17,11 +17,11 @@ public class Game {
         this.scanner = new Scanner(System.in);
         char choice = mapSizeSelection();
         MapSize mapSize = getMapSize(choice);
-        this.world = new World(mapSize); // THIS ONE
-        this.factions = new Faction[2]; // AND THIS ONE
+        this.world = new World(mapSize);
+        this.factions = new Faction[2];
         String userFactionName = factionNameSelection();
         String enemyFactionName = getRandomFactionName();
-        int size = getWorld().determineSize(mapSize);
+        int size = MapSize.determineSize(mapSize);
         createFactions(userFactionName, enemyFactionName, size);
         System.out.println("You shall face the " + enemyFactionName + "!");
         getScanner().close();
@@ -42,7 +42,7 @@ public class Game {
         System.out.println("L: 8x8 grid");
         char choice = 'Z';
         while(choice != 'S' && choice != 'M' && choice != 'L'){
-            System.out.println("Enter your desired map size:");
+            System.out.println("Enter your desired map size.");
             choice = getScanner().next().charAt(0);
         }
         return choice;
