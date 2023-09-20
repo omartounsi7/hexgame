@@ -1,30 +1,47 @@
 package com.omar.models.game;
 
+import com.omar.models.faction.Faction;
 import com.omar.models.map.MapSize;
 import com.omar.models.map.World;
 
 import java.util.Scanner;
 
 public class Game {
-    World world;
+    private final World world;
+    private final Faction [] factions;
+    private final Scanner scanner;
+    public World getWorld() {
+        return world;
+    }
+    public Faction getFaction(int index) {
+        return factions[index];
+    }
+    public Scanner getScanner() {
+        return scanner;
+    }
     public Game() {
+        this.scanner = new Scanner(System.in);
         System.out.println("Welcome to Hex Wars!\n");
         char choice = mapSizeSelection();
         MapSize mapSize = getMapSize(choice);
         this.world = new World(mapSize);
+        this.factions = new Faction[2];
+        String userFactionName = factionNameSelection();
+        String enemyFactionName = "Vermilion Guild";
+        createFactions(userFactionName, enemyFactionName);
+        System.out.println("You shall face off against the " + enemyFactionName + "!");
+        getScanner().close();
     }
     public char mapSizeSelection(){
         System.out.println("The map size options are:");
         System.out.println("S: 4x4 grid");
         System.out.println("M: 6x6 grid");
         System.out.println("L: 8x8 grid");
-        Scanner scanner = new Scanner(System.in);
         char choice = 'Z';
         while(choice != 'S' && choice != 'M' && choice != 'L'){
-            System.out.println("Please enter your desired map size:");
-            choice = scanner.next().charAt(0);
+            System.out.println("Enter your desired map size:");
+            choice = getScanner().next().charAt(0);
         }
-        scanner.close();
         return choice;
     }
     public MapSize getMapSize(char choice){
@@ -34,5 +51,18 @@ public class Game {
             case 'L' -> MapSize.LARGE;
             default -> throw new IllegalStateException("Unexpected value: " + choice);
         };
+    }
+    public String factionNameSelection(){
+        getScanner().nextLine();
+        String factionName = "";
+        while(factionName.isBlank()){
+            System.out.println("Enter the name of your glorious faction!");
+            factionName = getScanner().nextLine();
+        }
+        return factionName;
+    }
+    public void createFactions(String userFactionName, String enemyFactionName){
+        factions[0] = new Faction(userFactionName);
+        factions[1] = new Faction(enemyFactionName);
     }
 }
