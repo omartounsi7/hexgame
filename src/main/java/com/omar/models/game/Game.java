@@ -24,7 +24,7 @@ public class Game {
         int size = MapSize.determineSize(mapSize);
         createFactions(userFactionName, enemyFactionName, size);
         System.out.println("You shall face the " + enemyFactionName + "!");
-        getScanner().close();
+        scanner.close();
     }
     public World getWorld() {
         return world;
@@ -32,10 +32,7 @@ public class Game {
     public Faction getFaction(int index) {
         return factions[index];
     }
-    public Scanner getScanner() {
-        return scanner;
-    }
-    public char mapSizeSelection(){
+    private char mapSizeSelection(){
         System.out.println("The map size options are:");
         System.out.println("S: 4x4 grid");
         System.out.println("M: 6x6 grid");
@@ -43,11 +40,11 @@ public class Game {
         char choice = 'Z';
         while(choice != 'S' && choice != 'M' && choice != 'L'){
             System.out.println("Enter your desired map size.");
-            choice = getScanner().next().charAt(0);
+            choice = scanner.next().charAt(0);
         }
         return choice;
     }
-    public MapSize getMapSize(char choice){
+    private MapSize getMapSize(char choice){
         return switch (choice) {
             case 'S' -> MapSize.SMALL;
             case 'M' -> MapSize.MEDIUM;
@@ -55,20 +52,20 @@ public class Game {
             default -> throw new IllegalStateException("Unexpected value: " + choice);
         };
     }
-    public String factionNameSelection(){
-        getScanner().nextLine();
+    private String factionNameSelection(){
+        scanner.nextLine();
         String factionName = "";
         while(factionName.isBlank()){
             System.out.println("Enter the name of your glorious faction!");
-            factionName = getScanner().nextLine();
+            factionName = scanner.nextLine();
         }
         return factionName;
     }
-    public void createFactions(String userFactionName, String enemyFactionName, int size){
+    private void createFactions(String userFactionName, String enemyFactionName, int size){
         factions[0] = new Faction(userFactionName, 0);
         factions[1] = new Faction(enemyFactionName, size * size - 1);
     }
-    public String getRandomFactionName(){
+    private String getRandomFactionName(){
         Random random = new Random();
         int randomFactionIndex = random.nextInt(FactionNames.factionNames.length);
         return FactionNames.factionNames[randomFactionIndex];
