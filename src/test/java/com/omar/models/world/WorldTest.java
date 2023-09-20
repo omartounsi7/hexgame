@@ -16,7 +16,7 @@ public class WorldTest {
         this.expectedMediumMap = createMediumMap();
         this.expectedLargeMap = createLargeMap();
     }
-    public Map<Integer, Set<Integer>> createSmallMap(){
+    private Map<Integer, Set<Integer>> createSmallMap(){
         Map<Integer, Set<Integer>> smallMap = new HashMap<>();
         smallMap.put(0, new HashSet<>(Arrays.asList(1, 4, 5)));
         smallMap.put(1, new HashSet<>(Arrays.asList(0, 2, 5)));
@@ -36,7 +36,7 @@ public class WorldTest {
         smallMap.put(15, new HashSet<>(Arrays.asList(10, 11, 14)));
         return smallMap;
     }
-    public Map<Integer, Set<Integer>> createMediumMap(){
+    private Map<Integer, Set<Integer>> createMediumMap(){
         Map<Integer, Set<Integer>> mediumMap = new HashMap<>();
         mediumMap.put(0, new HashSet<>(Arrays.asList(1, 6, 7)));
         mediumMap.put(1, new HashSet<>(Arrays.asList(0, 2, 7)));
@@ -76,7 +76,7 @@ public class WorldTest {
         mediumMap.put(35, new HashSet<>(Arrays.asList(34, 28, 29)));
         return mediumMap;
     }
-    public Map<Integer, Set<Integer>> createLargeMap(){
+    private Map<Integer, Set<Integer>> createLargeMap(){
         Map<Integer, Set<Integer>> largeMap = new HashMap<>();
         largeMap.put(0, new HashSet<>(Arrays.asList(1, 8, 9)));
         largeMap.put(1, new HashSet<>(Arrays.asList(0, 2, 9)));
