@@ -6,7 +6,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class WorldTest {
+public class WorldTest {
     private final Map<Integer, Set<Integer>> expectedSmallMap;
     private final Map<Integer, Set<Integer>> expectedMediumMap;
     private final Map<Integer, Set<Integer>> expectedLargeMap;
