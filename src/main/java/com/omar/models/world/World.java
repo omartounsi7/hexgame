@@ -87,7 +87,7 @@ public class World {
         for (int v : adjacencyMatrix.keySet()) {
             builder.append("{").append(v).append("}").append(": { ");
             for (int w : adjacencyMatrix.get(v)) {
-                builder.append(w).append(", ");
+                builder.append(w).append(" ");
             }
             builder.append("}\n");
         }
