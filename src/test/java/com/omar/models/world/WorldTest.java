@@ -10,8 +10,29 @@ public class WorldTest {
     private final Map<Integer, Set<Integer>> expectedSmallMap;
     private final Map<Integer, Set<Integer>> expectedMediumMap;
     private final Map<Integer, Set<Integer>> expectedLargeMap;
+    private final int smallSize;
+    private final int mediumSize;
+    private final int largeSize;
+    private final Tile[] smallTiles;
+    private final Tile[] mediumTiles;
+    private final Tile[] largeTiles;
+    private final Map<Integer, Set<Integer>> smallAdjacencyMatrix;
+    private final Map<Integer, Set<Integer>> mediumAdjacencyMatrix;
+    private final Map<Integer, Set<Integer>> largeAdjacencyMatrix;
 
     public WorldTest() {
+        this.smallSize = MapSize.determineSize(MapSize.SMALL);
+        this.mediumSize = MapSize.determineSize(MapSize.MEDIUM);
+        this.largeSize = MapSize.determineSize(MapSize.LARGE);
+
+        this.smallTiles = new Tile[smallSize * smallSize];
+        this.mediumTiles = new Tile[mediumSize * mediumSize];
+        this.largeTiles = new Tile[largeSize * largeSize];
+
+        this.smallAdjacencyMatrix = new HashMap<>();
+        this.mediumAdjacencyMatrix = new HashMap<>();
+        this.largeAdjacencyMatrix = new HashMap<>();
+
         this.expectedSmallMap = createSmallMap();
         this.expectedMediumMap = createMediumMap();
         this.expectedLargeMap = createLargeMap();
@@ -146,17 +167,17 @@ public class WorldTest {
     }
     @Test
     void testSmallMap() {
-        World smallWorld = new World(MapSize.SMALL);
+        World smallWorld = new World(smallTiles, smallAdjacencyMatrix, smallSize);
         assertEquals(expectedSmallMap, smallWorld.getAdjacencyMatrix());
     }
     @Test
     void testMediumMap() {
-        World mediumWorld = new World(MapSize.MEDIUM);
+        World mediumWorld = new World(mediumTiles, mediumAdjacencyMatrix, mediumSize);
         assertEquals(expectedMediumMap, mediumWorld.getAdjacencyMatrix());
     }
     @Test
     void testLargeMap() {
-        World largeWorld = new World(MapSize.LARGE);
+        World largeWorld = new World(largeTiles, largeAdjacencyMatrix, largeSize);
         assertEquals(expectedLargeMap, largeWorld.getAdjacencyMatrix());
     }
 }

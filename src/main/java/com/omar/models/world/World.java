@@ -5,10 +5,9 @@ import java.util.*;
 public class World {
     private final Map<Integer, Set<Integer>> adjacencyMatrix;
     private final Tile[] tiles;
-    public World(MapSize mapsize) {
-        int size = MapSize.determineSize(mapsize);
-        this.adjacencyMatrix = new HashMap<>();
-        this.tiles = new Tile[size * size];
+    public World(Tile[] tiles, Map<Integer, Set<Integer>> adjacencyMatrix, int size) {
+        this.adjacencyMatrix = adjacencyMatrix;
+        this.tiles = tiles;
         createTiles(size);
         linkNeighboringTiles(size);
     }

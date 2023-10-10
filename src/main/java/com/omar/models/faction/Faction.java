@@ -1,15 +1,13 @@
 package com.omar.models.faction;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 public class Faction {
     private final String name;
     private final List<Army> armies;
-    public Faction(String name, int startingPos) {
+    public Faction(String name, int startingPos, List<Army> armies) {
         this.name = name;
-        this.armies = new LinkedList<>();
+        this.armies = armies;
         initArmies(startingPos);
     }
     public String getName() {
