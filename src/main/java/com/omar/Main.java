@@ -25,7 +25,7 @@ public class Main {
         World world = new World(tiles, adjacencyMatrix, size);
         Faction[] factions = new Faction[2];
         createFactions(factions, size, scanner);
-        System.out.println("Let the game begin!");
+        System.out.println("Let the game begin!\n");
         return new Game(scanner, world, factions);
     }
     private static char mapSizeSelection(Scanner scanner){

@@ -24,6 +24,12 @@ public class Faction {
     }
     @Override
     public String toString() {
-        return name + ": Armies -> " + armies;
+        StringBuilder factionString = new StringBuilder(name + " armies:\n");
+
+        for(int i = 1; i <= armies.size(); i++) {
+            factionString.append("Army #").append(i).append(": ").append(getArmy(i - 1)).append("\n");
+        }
+
+        return factionString.toString();
     }
 }

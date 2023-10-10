@@ -17,12 +17,12 @@ public class Game {
     }
 
     private void p1turn(){
-        System.out.println("Player 1's move");
+        System.out.println("Player 1's turn.");
         System.out.println(factions[0]);
         status = GameStatus.P1WINS;
     }
     private void p2turn(){
-        System.out.println("Player 2's move");
+        System.out.println("Player 2's turn.");
         System.out.println(factions[1]);
         status = GameStatus.P2WINS;
     }
