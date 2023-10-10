@@ -15,10 +15,23 @@ public class Game {
         this.factions = factions;
         this.status = GameStatus.ACTIVE;
     }
+
+    private void p1turn(){
+        System.out.println("Player 1's move");
+        System.out.println(factions[0]);
+        status = GameStatus.P1WINS;
+    }
+    private void p2turn(){
+        System.out.println("Player 2's move");
+        System.out.println(factions[1]);
+        status = GameStatus.P2WINS;
+    }
     public void play(){
         while(status == GameStatus.ACTIVE){
-            status = GameStatus.P2WINS;
+            p1turn();
+            p2turn();
         }
+
         if(status == GameStatus.P1WINS){
             System.out.println(factions[0].getName() + " has won!");
         } else {
@@ -26,11 +39,5 @@ public class Game {
         }
         System.out.println("Game over.");
         scanner.close();
-    }
-    public World getWorld() {
-        return world;
-    }
-    public Faction getFaction(int index) {
-        return factions[index];
     }
 }
