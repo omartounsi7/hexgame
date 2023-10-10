@@ -22,7 +22,6 @@ public class Main {
         Map<Integer, Set<Integer>> adjacencyMatrix = new HashMap<>();
         World world = new World(tiles, adjacencyMatrix, size);
 
-
         Faction[] factions = new Faction[2];
         String userFactionName = factionNameSelection(scanner);
         String enemyFactionName = getRandomFactionName();
@@ -67,7 +66,7 @@ public class Main {
         return FactionNames.factionNames[randomFactionIndex];
     }
     private static void createFactions(Faction[] factions, String userFactionName, String enemyFactionName, int size){
-        factions[0] = new Faction(userFactionName, 0);
-        factions[1] = new Faction(enemyFactionName, size * size - 1);
+        factions[0] = new Faction(userFactionName, 0, new LinkedList<>());
+        factions[1] = new Faction(enemyFactionName, size * size - 1, new LinkedList<>());
     }
 }
