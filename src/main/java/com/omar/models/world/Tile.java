@@ -18,6 +18,6 @@ public class Tile {
     }
     @Override
     public String toString() {
-        return "{" + number + "}";
+        return "{" + number + ", " + status + "}";
     }
 }
