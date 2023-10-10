@@ -8,10 +8,12 @@ public class Game {
     private final World world;
     private final Faction [] factions;
     private final Scanner scanner;
+    private GameStatus status;
     public Game(Scanner scanner, World world, Faction [] factions) {
         this.scanner = scanner;
         this.world = world;
         this.factions = factions;
+        this.status = GameStatus.ACTIVE;
     }
     public World getWorld() {
         return world;
