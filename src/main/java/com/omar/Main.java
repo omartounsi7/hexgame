@@ -11,25 +11,22 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
+        Game game = createGame();
+        game.play();
+    }
+    private static Game createGame(){
         System.out.println("Welcome to Hex Wars!\n");
         Scanner scanner = new Scanner(System.in);
-
         char choice = mapSizeSelection(scanner);
         MapSize mapSize = getMapSize(choice);
-
         int size = MapSize.determineSize(mapSize);
         Tile[] tiles = new Tile[size * size];
         Map<Integer, Set<Integer>> adjacencyMatrix = new HashMap<>();
         World world = new World(tiles, adjacencyMatrix, size);
-
         Faction[] factions = new Faction[2];
-        String userFactionName = factionNameSelection(scanner);
-        String enemyFactionName = getRandomFactionName();
-
-        createFactions(factions, userFactionName, enemyFactionName, size);
-        System.out.println("You shall face the " + enemyFactionName + "!");
-        Game game = new Game(scanner, world, factions);
-        scanner.close();
+        createFactions(factions, size, scanner);
+        System.out.println("Let the game begin!");
+        return new Game(scanner, world, factions);
     }
     private static char mapSizeSelection(Scanner scanner){
         System.out.println("The map size options are:");
@@ -38,7 +35,7 @@ public class Main {
         System.out.println("L: 8x8 grid");
         char choice = 'Z';
         while(choice != 'S' && choice != 'M' && choice != 'L'){
-            System.out.println("Enter your desired map size.");
+            System.out.println("Enter your desired map size:");
             choice = scanner.next().charAt(0);
         }
         return choice;
@@ -51,11 +48,10 @@ public class Main {
             default -> throw new IllegalStateException("Unexpected value: " + choice);
         };
     }
-    private static String factionNameSelection(Scanner scanner){
-        scanner.nextLine();
+    private static String factionNameSelection(Scanner scanner, int playerNum){
         String factionName = "";
         while(factionName.isBlank()){
-            System.out.println("Enter the name of your glorious faction!");
+            System.out.println("Enter the name of player " + playerNum + "'s faction:");
             factionName = scanner.nextLine();
         }
         return factionName;
@@ -65,8 +61,11 @@ public class Main {
         int randomFactionIndex = random.nextInt(FactionNames.factionNames.length);
         return FactionNames.factionNames[randomFactionIndex];
     }
-    private static void createFactions(Faction[] factions, String userFactionName, String enemyFactionName, int size){
-        factions[0] = new Faction(userFactionName, 0, new LinkedList<>());
-        factions[1] = new Faction(enemyFactionName, size * size - 1, new LinkedList<>());
+    private static void createFactions(Faction[] factions, int size, Scanner scanner){
+        scanner.nextLine();
+        String faction1Name = factionNameSelection(scanner, 1);
+        String faction2Name = factionNameSelection(scanner, 2);
+        factions[0] = new Faction(faction1Name, 0, new LinkedList<>());
+        factions[1] = new Faction(faction2Name, size * size - 1, new LinkedList<>());
     }
 }
