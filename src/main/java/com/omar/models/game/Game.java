@@ -1,6 +1,7 @@
 package com.omar.models.game;
 
 import com.omar.models.faction.Faction;
+import com.omar.models.world.TileStatus;
 import com.omar.models.world.World;
 
 import java.util.Scanner;
@@ -21,8 +22,11 @@ public class Game {
     }
     private void makeMove(){
         Faction currPlayer = factions[1];
+        TileStatus currTileOccupier = TileStatus.P2OCCUPIED;
+
         if(whosturn == Turn.P1TURN){
             currPlayer = factions[0];
+            currTileOccupier = TileStatus.P1OCCUPIED;
             System.out.println("Player 1's turn.");
         } else if(whosturn == Turn.P2TURN){
             System.out.println("Player 2's turn.");
@@ -66,7 +70,9 @@ public class Game {
             }
         }
 
+        world.getTile(armyPosition).setStatus(TileStatus.EMPTY);
         currPlayer.getArmy(armyChoice - 1).setPosition(posChoice);
+        world.getTile(posChoice).setStatus(currTileOccupier);
     }
     public void play(){
         while(status == GameStatus.ACTIVE){
