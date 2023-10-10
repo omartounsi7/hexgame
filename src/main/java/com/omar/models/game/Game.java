@@ -12,7 +12,6 @@ public class Game {
         this.scanner = scanner;
         this.world = world;
         this.factions = factions;
-
     }
     public World getWorld() {
         return world;

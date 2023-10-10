@@ -3,26 +3,31 @@ package com.omar;
 import com.omar.models.faction.Faction;
 import com.omar.models.game.Game;
 import com.omar.models.world.MapSize;
+import com.omar.models.world.Tile;
 import com.omar.models.world.World;
 import com.omar.resources.FactionNames;
 
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
         System.out.println("Welcome to Hex Wars!\n");
         Scanner scanner = new Scanner(System.in);
+
         char choice = mapSizeSelection(scanner);
         MapSize mapSize = getMapSize(choice);
-        World world = new World(mapSize);
-        Faction[] factions = new Faction[2];
 
+        int size = MapSize.determineSize(mapSize);
+        Tile[] tiles = new Tile[size * size];
+        Map<Integer, Set<Integer>> adjacencyMatrix = new HashMap<>();
+        World world = new World(tiles, adjacencyMatrix, size);
+
+
+        Faction[] factions = new Faction[2];
         String userFactionName = factionNameSelection(scanner);
         String enemyFactionName = getRandomFactionName();
-        int size = MapSize.determineSize(mapSize);
-        createFactions(factions, userFactionName, enemyFactionName, size);
 
+        createFactions(factions, userFactionName, enemyFactionName, size);
         System.out.println("You shall face the " + enemyFactionName + "!");
         Game game = new Game(scanner, world, factions);
         scanner.close();
