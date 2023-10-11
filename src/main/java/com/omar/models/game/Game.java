@@ -1,9 +1,11 @@
 package com.omar.models.game;
 
+import com.omar.models.faction.Army;
 import com.omar.models.faction.Faction;
 import com.omar.models.world.TileStatus;
 import com.omar.models.world.World;
 
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -22,10 +24,11 @@ public class Game {
     }
     private void makeMove(){
         Faction currPlayer = factions[1];
+        Faction otherPlayer = factions[0];
         TileStatus currTileOccupier = TileStatus.P2OCCUPIED;
-
         if(whosturn == Turn.P1TURN){
             currPlayer = factions[0];
+            otherPlayer = factions[1];
             currTileOccupier = TileStatus.P1OCCUPIED;
             System.out.println("Player 1's turn.");
         } else if(whosturn == Turn.P2TURN){
@@ -49,8 +52,9 @@ public class Game {
             }
         }
 
-        System.out.println("You have selected army #" + armyChoice + " :" + currPlayer.getArmy(armyChoice - 1));
-        int armyPosition = currPlayer.getArmy(armyChoice - 1).getPosition();
+        Army selectedArmy = currPlayer.getArmy(armyChoice - 1);
+        System.out.println("You have selected army #" + armyChoice + ": " + selectedArmy);
+        int armyPosition = selectedArmy.getPosition();
         Set<Integer> possibleMoves = world.getTileNeighbors(armyPosition);
         System.out.println("Possible new positions are: " + possibleMoves);
 
@@ -71,8 +75,45 @@ public class Game {
         }
 
         world.getTile(armyPosition).setStatus(TileStatus.EMPTY);
-        currPlayer.getArmy(armyChoice - 1).setPosition(posChoice);
-        world.getTile(posChoice).setStatus(currTileOccupier);
+
+        if(world.getTile(posChoice).getStatus() == TileStatus.EMPTY){ // Tile is empty, move there.
+            selectedArmy.setPosition(posChoice);
+            world.getTile(posChoice).setStatus(currTileOccupier);
+        } else if(world.getTile(posChoice).getStatus() == currTileOccupier){ // Tile is occupied by allies.
+            List<Army> armies = currPlayer.getArmies();
+            int size = armies.size();
+            for (int i = 0 ; i < size ; i++) {
+                if(armies.get(i).getPosition() == posChoice){
+                    int firepower = armies.get(i).getFirepower();
+                    selectedArmy.setFirepower(selectedArmy.getFirepower() + firepower);
+                    armies.remove(i);
+                    selectedArmy.setPosition(posChoice);
+                    break;
+                }
+            }
+        } else { // // Tile is occupied by enemies. Combat.
+            List<Army> enemyArmies = otherPlayer.getArmies();
+            int size = enemyArmies.size();
+            for(int i = 0 ; i < size ; i++) {
+                if(enemyArmies.get(i).getPosition() == posChoice){
+                    int firepower = selectedArmy.getFirepower();
+                    int enemyFirepower = enemyArmies.get(i).getFirepower();
+
+                    if(enemyFirepower > firepower){
+                        enemyArmies.get(i).setFirepower(enemyFirepower - firepower);
+                        currPlayer.getArmies().remove(selectedArmy);
+                    } else if (enemyFirepower < firepower) {
+                        selectedArmy.setFirepower(firepower - enemyFirepower);
+                        enemyArmies.remove(i);
+                        selectedArmy.setPosition(posChoice);
+                    } else {
+                        currPlayer.getArmies().remove(selectedArmy);
+                        enemyArmies.remove(i);
+                    }
+                    break;
+                }
+            }
+        }
     }
     public void play(){
         while(status == GameStatus.ACTIVE){
