@@ -36,6 +36,17 @@ public class Game {
         }
         System.out.println(currPlayer);
 
+        // Temporary game end condition.
+        if(currPlayer.getArmies().isEmpty()){
+            System.out.println("You have lost all your armies!");
+            if(currTileOccupier == TileStatus.P2OCCUPIED){
+                status = GameStatus.P1WINS;
+            } else {
+                status = GameStatus.P2WINS;
+            }
+            return;
+        }
+
         int armyChoice;
         while (true) {
             System.out.println("Enter an army's number to select it.");
