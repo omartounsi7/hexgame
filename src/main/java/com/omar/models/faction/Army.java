@@ -21,6 +21,6 @@ public class Army {
     }
     @Override
     public String toString() {
-        return "[FP=" + firepower + ", POS=" + position + "]";
+        return "Firepower = " + firepower + " | Position = " + position;
     }
 }
