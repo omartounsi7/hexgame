@@ -39,10 +39,13 @@ public class Game {
         int armyChoice;
         while (true) {
             System.out.println("Enter an army's number to select it.");
+            System.out.println("Enter -1 to skip your move.");
             if (scanner.hasNextInt()) {
                 armyChoice = scanner.nextInt();
                 if (armyChoice >= 1 && armyChoice <= currPlayer.getArmies().size()) {
                     break;
+                } else if(armyChoice == -1) {
+                    return;
                 } else {
                     System.out.println("Invalid input!");
                 }
