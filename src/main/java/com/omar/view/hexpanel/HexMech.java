@@ -1,10 +1,13 @@
 package com.omar.view.hexpanel;
 
+import com.omar.model.world.TileStatus;
+
 import java.awt.*;
+import static com.omar.view.hexpanel.Constants.*;
 
 /* This is a companion class to hexgame.java. It handles all of the mechanics related to hexagon grids. */
 
-public class hexmech
+public class HexMech
 {
   /* Helpful references: 
 http://www.codeproject.com/Articles/14948/Hexagonal-grid-for-games-and-other-projects-Part-1
@@ -116,10 +119,10 @@ The hexagon is drawn in the colour specified in hexgame.COLOURELL.
 		int x = i * (s+t);
 		int y = j * h + (i%2) * h/2;
 		Polygon poly = hex(x,y);
-		g2.setColor(hexgame.COLOURCELL);
+		g2.setColor(EMPTYCOLOR);
 		//g2.fillPolygon(hexmech.hex(x,y));
 		g2.fillPolygon(poly);
-		g2.setColor(hexgame.COLOURGRID);
+		g2.setColor(GRIDCOLOR);
 		g2.drawPolygon(poly);
 	}
 
@@ -136,25 +139,22 @@ The hexagon is drawn in the colour specified in hexgame.COLOURELL.
 	  The colour is set by hexgame.COLOURONE and hexgame.COLOURTWO.
 	  The value of n is converted to letter and drawn in the hexagon.
 *****************************************************************************/
-	public static void fillHex(int i, int j, int n, Graphics2D g2) {
-		char c='o';
+	public static void fillHex(int i, int j, TileStatus status, Graphics2D g2) {
 		int x = i * (s+t);
 		int y = j * h + (i%2) * h/2;
-		if (n < 0) {
-			g2.setColor(hexgame.COLOURONE);
+
+		if (status == TileStatus.P1OCCUPIED) {
+			g2.setColor(P1COLOR);
 			g2.fillPolygon(hex(x,y));
-			g2.setColor(hexgame.COLOURONETXT);
-			c = (char)(-n);
-			g2.drawString(""+c, x+r+BORDERS, y+r+BORDERS+4); //FIXME: handle XYVertex
-			//g2.drawString(x+","+y, x+r+BORDERS, y+r+BORDERS+4);
-		}
-		if (n > 0) {
-			g2.setColor(hexgame.COLOURTWO);
+			g2.setColor(TXTCOLOR);
+		} else if (status == TileStatus.P2OCCUPIED) {
+			g2.setColor(P2COLOR);
 			g2.fillPolygon(hex(x,y));
-			g2.setColor(hexgame.COLOURTWOTXT);
-			c = (char)n;
-			g2.drawString(""+c, x+r+BORDERS, y+r+BORDERS+4); //FIXME handle XYVertex
-			//g2.drawString(i+","+j, x+r+BORDERS, y+r+BORDERS+4);
+			g2.setColor(TXTCOLOR);
+		} else {
+			g2.setColor(EMPTYCOLOR);
+			g2.fillPolygon(hex(x,y));
+			g2.setColor(TXTCOLOR);
 		}
 	}
 

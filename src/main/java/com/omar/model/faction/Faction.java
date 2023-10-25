@@ -5,10 +5,10 @@ import java.util.List;
 public class Faction {
     private final String name;
     private final List<Army> armies;
-    public Faction(String name, int startingPos, List<Army> armies) {
+    public Faction(String name, int x, int y, List<Army> armies) {
         this.name = name;
         this.armies = armies;
-        initArmies(startingPos);
+        initArmies(x,y);
     }
     public String getName() {
         return name;
@@ -19,8 +19,8 @@ public class Faction {
     public Army getArmy(int index){
         return armies.get(index);
     }
-    private void initArmies(int startingPos){
-        armies.add(new Army(10, startingPos));
+    private void initArmies(int x, int y){
+        armies.add(new Army(10, x, y));
     }
     @Override
     public String toString() {

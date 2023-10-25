@@ -22,6 +22,7 @@ public class Game {
         this.status = GameStatus.ACTIVE;
         this.whosturn = Turn.P1TURN;
     }
+    /*
     private void makeMove(){
         Faction currPlayer = factions[1];
         Faction otherPlayer = factions[0];
@@ -146,4 +147,5 @@ public class Game {
         System.out.println("Game over.");
         scanner.close();
     }
+    */
 }
