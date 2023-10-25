@@ -30,6 +30,7 @@ public class Main {
         char choice = mapSizeSelection(scanner);
         MapSize mapSize = getMapSize(choice);
         int size = MapSize.determineSize(mapSize);
+
         Tile[] tiles = new Tile[size * size];
         Map<Integer, Set<Integer>> adjacencyMatrix = new HashMap<>();
         World world = new World(tiles, adjacencyMatrix, size);

@@ -31,8 +31,8 @@ public class hexgame
 	final static Color COLOURTWO = new Color(0,0,0,200);
 	final static Color COLOURTWOTXT = new Color(255,100,255);
 	final static int EMPTY = 0;
-	final static int BSIZE = 8; //board size.
-	final static int HEXSIZE = 60;	//hex size in pixels
+	final static int BSIZE = 8;
+	final static int HEXSIZE = 60;
 	final static int BORDERS = 15;  
 	final static int SCRSIZE = HEXSIZE * (BSIZE + 1) + BORDERS*3; //screen size (vertical dimension).
 	int[][] board = new int[BSIZE][BSIZE];
@@ -48,7 +48,7 @@ public class hexgame
 			}
 		}
 
-		//set up board here
+		// Init map
 		board[3][4] = '<'; // SOUTH EAST
 		board[3][3] = 'n'; // NORTH EAST
 		board[4][3] = 'N'; // NORTH
@@ -74,12 +74,9 @@ public class hexgame
 		frame.add(new MainPanel(), BorderLayout.NORTH);
 	}
 	class DrawingPanel extends JPanel
-	{		
-		//mouse variables here
-		//Point mPt = new Point(0,0);
-
+	{
 		public DrawingPanel()
-		{	
+		{
 			setBackground(COLOURBACK);
 			LineBorder lineBorder = new LineBorder(Color.RED, 2);
 			this.setBorder(lineBorder);
@@ -101,37 +98,23 @@ public class hexgame
 			}
 			//fill in hexes
 			for (int i=0;i<BSIZE;i++) {
-				for (int j=0;j<BSIZE;j++) {					
-					//if (board[i][j] < 0) hexmech.fillHex(i,j,COLOURONE,-board[i][j],g2);
-					//if (board[i][j] > 0) hexmech.fillHex(i,j,COLOURTWO, board[i][j],g2);
+				for (int j=0;j<BSIZE;j++) {
 					hexmech.fillHex(i,j,board[i][j],g2);
 				}
 			}
-			//g.setColor(Color.RED);
-			//g.drawLine(mPt.x,mPt.y, mPt.x,mPt.y);
 		}
 
 		class MyMouseListener extends MouseAdapter	{	//inner class inside DrawingPanel 
 			public void mouseClicked(MouseEvent e) { 
 				int x = e.getX(); 
-				int y = e.getY(); 
-				//mPt.x = x;
-				//mPt.y = y;
+				int y = e.getY();
 				Point p = new Point( hexmech.pxtoHex(e.getX(),e.getY()) );
 				if (p.x < 0 || p.y < 0 || p.x >= BSIZE || p.y >= BSIZE) return;
-
-				//DEBUG: colour in the hex which is supposedly the one clicked on
-				//clear the whole screen first.
-				/* for (int i=0;i<BSIZE;i++) {
-					for (int j=0;j<BSIZE;j++) {
-						board[i][j]=EMPTY;
-					}
-				} */
 
 				//What do you want to do when a hexagon is clicked?
 				board[p.x][p.y] = 'X';
 				repaint();
 			}		 
-		} //end of MyMouseListener class 
-	} // end of DrawingPanel class
+		}
+	}
 }
