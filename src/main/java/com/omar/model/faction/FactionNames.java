@@ -1,4 +1,4 @@
-package com.omar.resources;
+package com.omar.model.faction;
 
 public class FactionNames {
     public static String[] factionNames = {

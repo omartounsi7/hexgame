@@ -1,6 +1,6 @@
 package com.omar;
 
-import com.omar.view.hexpanel.HexGame;
+import com.omar.model.game.HexGame;
 
 import javax.swing.*;
 

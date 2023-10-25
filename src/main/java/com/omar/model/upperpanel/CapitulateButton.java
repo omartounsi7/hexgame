@@ -1,4 +1,4 @@
-package com.omar.view.upperpanel;
+package com.omar.model.upperpanel;
 
 import javax.swing.*;
 import java.awt.*;

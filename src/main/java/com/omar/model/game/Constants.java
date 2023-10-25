@@ -1,4 +1,4 @@
-package com.omar.view.hexpanel;
+package com.omar.model.game;
 
 import java.awt.*;
 
