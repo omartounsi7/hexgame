@@ -1,5 +1,6 @@
 package com.omar.view.hexpanel;
 
+import com.omar.model.faction.Army;
 import com.omar.model.faction.Faction;
 import com.omar.model.world.Tile;
 import com.omar.model.world.TileStatus;
@@ -27,13 +28,13 @@ import static com.omar.view.hexpanel.Constants.*;
 
 
 /*
-		board[3][4] = '<'; // SOUTH EAST
-		board[3][3] = 'n'; // NORTH EAST
-		board[4][3] = 'N'; // NORTH
-		board[4][4] = '0'; // me!
-		board[4][5] = 'S'; // SOUTH
-		board[5][4] = 's'; // SOUTH WEST
-		board[5][3] = '>'; // NORTH WEST
+		board[x-1][y] = '<'; // SOUTH EAST
+		board[x-1][y-1] = 'n'; // NORTH EAST
+		board[x][y-1] = 'N'; // NORTH
+		board[x][y] = '0'; // me!
+		board[x][y+1] = 'S'; // SOUTH
+		board[x+1][y] = 's'; // SOUTH WEST
+		board[x+1][y-1] = '>'; // NORTH WEST
 
  */
 
@@ -52,8 +53,10 @@ public class HexGame {
 	}
 	private void createFactions(){
 		factions = new Faction[2];
-		factions[0] = new Faction(getRandomFactionName(), 0, 0, new LinkedList<>());
-		factions[1] = new Faction(getRandomFactionName(), MAPSIZE - 1, MAPSIZE - 1, new LinkedList<>());
+		factions[0] = new Faction(getRandomFactionName(), new LinkedList<>());
+		board[0][0].setOccupyingArmy(factions[0].getArmy(0));
+		factions[1] = new Faction(getRandomFactionName(), new LinkedList<>());
+		board[MAPSIZE - 1][MAPSIZE - 1].setOccupyingArmy(factions[1].getArmy(0));
 	}
 	private void initGame(){
 		HexMech.setXYasVertex(false);
@@ -65,8 +68,8 @@ public class HexGame {
 				board[i][y] = new Tile(i * MAPSIZE + y);
 			}
 		}
-		board[0][0].setStatus(TileStatus.P1OCCUPIED);
-		board[MAPSIZE - 1][MAPSIZE - 1].setStatus(TileStatus.P2OCCUPIED);
+		board[0][0].setController(TileStatus.P1OCCUPIED);
+		board[MAPSIZE - 1][MAPSIZE - 1].setController(TileStatus.P2OCCUPIED);
 	}
 	private void createAndShowGUI() {
 		JFrame.setDefaultLookAndFeelDecorated(true);
@@ -101,7 +104,12 @@ public class HexGame {
 			}
 			for (int i = 0; i< MAPSIZE; i++) {
 				for (int j = 0; j< MAPSIZE; j++) {
-					HexMech.fillHex(i,j, board[i][j].getStatus(),g2);
+					Army occArmy = board[i][j].getOccupyingArmy();
+					String fp = "";
+					if(occArmy != null){
+						fp = String.valueOf(occArmy.getFirepower());
+					}
+					HexMech.fillHex(i, j, board[i][j].getController(), g2, fp, board[i][j].isSelected());
 				}
 			}
 		}
@@ -114,6 +122,7 @@ public class HexGame {
 				//What do you want to do when a hexagon is clicked?
 				System.out.println(p.x + ", " + p.y + " was clicked.");
 				System.out.println("It corresponds to Tile " + board[p.x][p.y]);
+				board[p.x][p.y].setSelected(true);
 				repaint();
 			}
 		}

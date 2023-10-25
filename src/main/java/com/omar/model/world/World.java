@@ -32,8 +32,8 @@ public class World {
             tiles[i] = new Tile(i);
             addVertex(i);
         }
-        tiles[0].setStatus(TileStatus.P1OCCUPIED);
-        tiles[size * size - 1].setStatus(TileStatus.P2OCCUPIED);
+        tiles[0].setController(TileStatus.P1OCCUPIED);
+        tiles[size * size - 1].setController(TileStatus.P2OCCUPIED);
     }
     private void linkNeighboringTiles(int size){
         for(int i = 0 ; i < size * size ; i++){

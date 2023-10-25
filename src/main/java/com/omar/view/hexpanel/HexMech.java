@@ -139,7 +139,7 @@ The hexagon is drawn in the colour specified in hexgame.COLOURELL.
 	  The colour is set by hexgame.COLOURONE and hexgame.COLOURTWO.
 	  The value of n is converted to letter and drawn in the hexagon.
 *****************************************************************************/
-	public static void fillHex(int i, int j, TileStatus status, Graphics2D g2) {
+	public static void fillHex(int i, int j, TileStatus status, Graphics2D g2, String str, boolean selected) {
 		int x = i * (s+t);
 		int y = j * h + (i%2) * h/2;
 
@@ -147,14 +147,33 @@ The hexagon is drawn in the colour specified in hexgame.COLOURELL.
 			g2.setColor(P1COLOR);
 			g2.fillPolygon(hex(x,y));
 			g2.setColor(TXTCOLOR);
+			g2.drawString(str, x + r + BORDERS - 15, y + r + BORDERS + 4);
+			if(selected){
+				g2.setColor(P1ADJCOLOR);
+//				g2.fillPolygon(hex(x-1,y));
+//				g2.fillPolygon(hex(x-1,y-1));
+//				g2.fillPolygon(hex(x, y-1));
+//				g2.fillPolygon(hex(x, y+1));
+//				g2.fillPolygon(hex(x+1, y));
+//				g2.fillPolygon(hex(x+1, y-1));
+			}
 		} else if (status == TileStatus.P2OCCUPIED) {
 			g2.setColor(P2COLOR);
 			g2.fillPolygon(hex(x,y));
 			g2.setColor(TXTCOLOR);
+			g2.drawString(str, x + r + BORDERS - 15, y + r + BORDERS + 4);
+			if(selected){
+				g2.setColor(P2ADJCOLOR);
+//				g2.fillPolygon(hex(x-1,y));
+//				g2.fillPolygon(hex(x-1,y-1));
+//				g2.fillPolygon(hex(x,y-1));
+//				g2.fillPolygon(hex(x,y+1));
+//				g2.fillPolygon(hex(x+1, y));
+//				g2.fillPolygon(hex(x+1, y-1));
+			}
 		} else {
 			g2.setColor(EMPTYCOLOR);
 			g2.fillPolygon(hex(x,y));
-			g2.setColor(TXTCOLOR);
 		}
 	}
 
