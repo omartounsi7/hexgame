@@ -1,4 +1,4 @@
-package com.omar.models.faction;
+package com.omar.model.faction;
 
 import java.util.List;
 

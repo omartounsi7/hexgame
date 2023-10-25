@@ -1,4 +1,4 @@
-package com.omar.models.world;
+package com.omar.model.world;
 
 public enum MapSize {
     SMALL, MEDIUM, LARGE;

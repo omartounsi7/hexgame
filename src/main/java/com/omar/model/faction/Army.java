@@ -1,4 +1,4 @@
-package com.omar.models.faction;
+package com.omar.model.faction;
 
 public class Army {
     private int firepower;

@@ -1,4 +1,4 @@
-package com.omar.models.world;
+package com.omar.model.world;
 
 import java.util.*;
 

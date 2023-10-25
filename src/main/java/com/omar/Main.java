@@ -1,19 +1,29 @@
 package com.omar;
 
-import com.omar.models.faction.Faction;
-import com.omar.models.game.Game;
-import com.omar.models.world.MapSize;
-import com.omar.models.world.Tile;
-import com.omar.models.world.World;
+import com.omar.model.faction.Faction;
+import com.omar.model.game.Game;
+import com.omar.model.world.MapSize;
+import com.omar.model.world.Tile;
+import com.omar.model.world.World;
 import com.omar.resources.FactionNames;
+import com.omar.view.hexpanel.hexgame;
 
+import javax.swing.*;
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        Game game = createGame();
-        game.play();
+        // GUI
+        SwingUtilities.invokeLater(hexgame::new);
+
+        // Game logic
+//        Game game = createGame();
+//        game.play();
     }
+
+
+
+
     private static Game createGame(){
         System.out.println("Welcome to Hex Wars!\n");
         Scanner scanner = new Scanner(System.in);

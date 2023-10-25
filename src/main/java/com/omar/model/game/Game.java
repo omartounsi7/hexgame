@@ -1,9 +1,9 @@
-package com.omar.models.game;
+package com.omar.model.game;
 
-import com.omar.models.faction.Army;
-import com.omar.models.faction.Faction;
-import com.omar.models.world.TileStatus;
-import com.omar.models.world.World;
+import com.omar.model.faction.Army;
+import com.omar.model.faction.Faction;
+import com.omar.model.world.TileStatus;
+import com.omar.model.world.World;
 
 import java.util.List;
 import java.util.Scanner;

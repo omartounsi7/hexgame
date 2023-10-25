@@ -1,4 +1,4 @@
-package com.omar.models.world;
+package com.omar.model.world;
 
 public class Tile {
     private final int number;
