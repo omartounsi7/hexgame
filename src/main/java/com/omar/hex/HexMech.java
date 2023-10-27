@@ -1,9 +1,9 @@
-package com.omar.model.game;
+package com.omar.hex;
 
-import com.omar.model.world.TileStatus;
+import com.omar.model.TileStatus;
 
 import java.awt.*;
-import static com.omar.model.game.Constants.*;
+import static com.omar.hex.HexConst.*;
 
 /* This is a companion class to hexgame.java. It handles all of the mechanics related to hexagon grids. */
 
@@ -157,6 +157,8 @@ The hexagon is drawn in the colour specified in hexgame.COLOURELL.
 		} else {
 			g2.setColor(EMPTYCOLOR);
 			g2.fillPolygon(hex(x,y));
+//			g2.setColor(TXTCOLOR);
+//			g2.drawString(str, x + r + BORDERS - 15, y + r + BORDERS + 4);
 		}
 	}
 

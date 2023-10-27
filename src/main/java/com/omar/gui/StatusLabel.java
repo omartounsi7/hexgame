@@ -1,12 +1,11 @@
-package com.omar.model.upperpanel;
+package com.omar.gui;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class StatusLabel extends JLabel {
     StatusLabel(){
-        this.setText("Player 1's turn");
-        this.setForeground(Color.RED);
+        this.setForeground(Color.ORANGE);
         this.setFont(new Font("Arial", Font.PLAIN, 36));
         this.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
