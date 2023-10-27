@@ -11,7 +11,6 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.event.*;
-import java.util.LinkedList;
 import java.util.Random;
 
 import static com.omar.model.game.Constants.*;
@@ -185,10 +184,10 @@ public class HexGame {
 	}
 	private void createFactions(){
 		factions = new Faction[2];
-		factions[0] = new Faction(getRandomFactionName(), new LinkedList<>());
-		board[0][0].setOccupyingArmy(factions[0].getArmy(0));
-		factions[1] = new Faction(getRandomFactionName(), new LinkedList<>());
-		board[MAPSIZE - 1][MAPSIZE - 1].setOccupyingArmy(factions[1].getArmy(0));
+		factions[0] = new Faction(getRandomFactionName());
+		board[0][0].setOccupyingArmy(new Army(10, 0));
+		factions[1] = new Faction(getRandomFactionName());
+		board[MAPSIZE - 1][MAPSIZE - 1].setOccupyingArmy(new Army(10, 1));
 	}
 	private void createMap(){
 		HexMech.setXYasVertex(false);
@@ -200,8 +199,8 @@ public class HexGame {
 				board[i][y] = new Tile(i * MAPSIZE + y);
 			}
 		}
-		board[0][0].setController(TileStatus.P1OCCUPIED);
-		board[MAPSIZE - 1][MAPSIZE - 1].setController(TileStatus.P2OCCUPIED);
+		board[0][0].setControllerFaction(TileStatus.P1OCCUPIED);
+		board[MAPSIZE - 1][MAPSIZE - 1].setControllerFaction(TileStatus.P2OCCUPIED);
 	}
 	private void createAndShowGUI() {
 		JFrame.setDefaultLookAndFeelDecorated(true);
@@ -241,7 +240,7 @@ public class HexGame {
 					if(occArmy != null){
 						fp = String.valueOf(occArmy.getFirepower());
 					}
-					HexMech.fillHex(i, j, board[i][j].getController(), g2, fp);
+					HexMech.fillHex(i, j, board[i][j].getControllerFaction(), g2, fp);
 				}
 			}
 		}

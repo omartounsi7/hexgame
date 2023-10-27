@@ -2,8 +2,13 @@ package com.omar.model.faction;
 
 public class Army {
     private int firepower;
-    public Army(int firepower) {
+    private final int ownerFaction;
+    public Army(int firepower, int ownerFaction) {
         this.firepower = firepower;
+        this.ownerFaction = ownerFaction;
+    }
+    public int getOwnerFaction() {
+        return ownerFaction;
     }
     public int getFirepower() {
         return firepower;
