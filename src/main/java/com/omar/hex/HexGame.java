@@ -1,6 +1,7 @@
 package com.omar.hex;
 
 import com.omar.model.Army;
+import com.omar.model.CityNames;
 import com.omar.model.Tile;
 import com.omar.model.TileStatus;
 import com.omar.gui.MainPanel;
@@ -9,6 +10,7 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.event.*;
+import java.util.Random;
 
 import static com.omar.hex.HexConst.*;
 
@@ -36,11 +38,20 @@ public class HexGame {
 		HexMech.setHeight(TILESIZE);
 		HexMech.setBorders(BORDERS);
 		board = new Tile[MAPSIZE][MAPSIZE];
-		for(int i = 0; i < MAPSIZE; i++){
-			for(int y = 0; y < MAPSIZE; y++){
-				board[i][y] = new Tile(i , y);
+		Random random = new Random();
+
+		for (int x = 0; x < MAPSIZE; x++) {
+			for (int y = 0; y < MAPSIZE; y++) {
+				board[x][y] = new Tile(x, y);
+				boolean isCapital = (x == 0 && y == 0) || (x == MAPSIZE - 1 && y == MAPSIZE - 1);
+				if (random.nextDouble() <= 0.35 || isCapital) {
+					int randomCityIndex = random.nextInt(CityNames.cityNames.length);
+					String cityName = CityNames.cityNames[randomCityIndex];
+					board[x][y].setCity(cityName);
+				}
 			}
 		}
+
 		board[0][0].setOccupyingArmy(new Army(10, 0));
 		board[MAPSIZE - 1][MAPSIZE - 1].setOccupyingArmy(new Army(10, 1));
 		board[0][0].setTileStatus(TileStatus.P1OCCUPIED);
@@ -82,12 +93,19 @@ public class HexGame {
 			for (int i = 0; i< MAPSIZE; i++) {
 				for (int j = 0; j< MAPSIZE; j++) {
 					Army occArmy = board[i][j].getOccupyingArmy();
-					String fp = "";
-					if(occArmy != null){
-						fp = String.valueOf(occArmy.getFirepower());
+					String city = board[i][j].getCity();
+
+					String str1 = "";
+					String str2 = "";
+
+					if(city != null){
+						str1 += city;
 					}
-					HexMech.fillHex(i, j, board[i][j].getTileStatus(), g2, fp);
-//					HexMech.fillHex(i, j, board[i][j].getControllerFaction(), g2, i + " " + j);
+					if(occArmy != null){
+						str2 += String.valueOf(occArmy.getFirepower());
+					}
+
+					HexMech.fillHex(i, j, board[i][j].getTileStatus(), g2, str1, str2);
 				}
 			}
 		}
