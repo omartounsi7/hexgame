@@ -1,9 +1,9 @@
-package com.omar.model.game;
+package com.omar.hex;
 
-import com.omar.model.world.TileStatus;
+import com.omar.model.TileStatus;
 
 import java.awt.*;
-import static com.omar.model.game.Constants.*;
+import static com.omar.hex.HexConst.*;
 
 /* This is a companion class to hexgame.java. It handles all of the mechanics related to hexagon grids. */
 

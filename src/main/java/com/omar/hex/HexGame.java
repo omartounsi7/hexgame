@@ -1,11 +1,11 @@
-package com.omar.model.game;
+package com.omar.hex;
 
-import com.omar.model.faction.Army;
-import com.omar.model.faction.Faction;
-import com.omar.model.world.Tile;
-import com.omar.model.world.TileStatus;
-import com.omar.model.faction.FactionNames;
-import com.omar.model.upperpanel.MainPanel;
+import com.omar.model.Army;
+import com.omar.model.Faction;
+import com.omar.resources.FactionNames;
+import com.omar.model.Tile;
+import com.omar.model.TileStatus;
+import com.omar.gui.MainPanel;
 
 import java.awt.*;
 import javax.swing.*;
@@ -13,7 +13,7 @@ import javax.swing.border.LineBorder;
 import java.awt.event.*;
 import java.util.Random;
 
-import static com.omar.model.game.Constants.*;
+import static com.omar.hex.HexConst.*;
 
 /**********************************
   This is the main class of a Java program to play a game based on hexagonal tiles.
@@ -40,7 +40,7 @@ public class HexGame {
 	Tile[][] board;
 	Faction[] factions;
 	private GameStatus status;
-	private Turn whosturn;
+	private TurnStatus whosturn;
 	public HexGame() {
 		createMap();
 		createFactions();
@@ -160,10 +160,10 @@ public class HexGame {
 	public void play(){
 		while(status == GameStatus.ACTIVE){
 			makeMove();
-			if(whosturn == Turn.P1TURN){
-				whosturn = Turn.P2TURN;
-			} else if(whosturn == Turn.P2TURN){
-				whosturn = Turn.P1TURN;
+			if(whosturn == TurnStatus.P1TURN){
+				whosturn = TurnStatus.P2TURN;
+			} else if(whosturn == TurnStatus.P2TURN){
+				whosturn = TurnStatus.P1TURN;
 			}
 		}
 		if(status == GameStatus.P1WINS){
@@ -175,7 +175,7 @@ public class HexGame {
 	}
 	private void initGame(){
 		this.status = GameStatus.ACTIVE;
-		this.whosturn = Turn.P1TURN;
+		this.whosturn = TurnStatus.P1TURN;
 	}
 	private static String getRandomFactionName(){
 		Random random = new Random();

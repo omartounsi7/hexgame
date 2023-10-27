@@ -1,4 +1,4 @@
-package com.omar.model.upperpanel;
+package com.omar.gui;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;

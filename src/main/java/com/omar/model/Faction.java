@@ -1,4 +1,4 @@
-package com.omar.model.faction;
+package com.omar.model;
 
 
 public class Faction {

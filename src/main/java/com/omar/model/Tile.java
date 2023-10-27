@@ -1,6 +1,4 @@
-package com.omar.model.world;
-
-import com.omar.model.faction.Army;
+package com.omar.model;
 
 public class Tile {
     private final int number;

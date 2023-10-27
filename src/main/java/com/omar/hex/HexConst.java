@@ -1,8 +1,8 @@
-package com.omar.model.game;
+package com.omar.hex;
 
 import java.awt.*;
 
-public class Constants {
+public class HexConst {
     final static Color BGCOLOR =  Color.BLACK;
     final static Color EMPTYCOLOR =  Color.RED;
     final static Color GRIDCOLOR =  Color.BLACK;
