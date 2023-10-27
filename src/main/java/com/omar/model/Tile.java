@@ -1,20 +1,14 @@
 package com.omar.model;
 
 public class Tile {
-    private final int number;
+    private final int x;
+    private final int y;
     private TileStatus controllerFaction;
     private Army occupyingArmy;
-    private boolean selected;
-    public Tile(int number) {
-        this.number = number;
+    public Tile(int x, int y) {
+        this.x = x;
+        this.y = y;
         this.controllerFaction = TileStatus.EMPTY;
-        this.selected = false;
-    }
-    public boolean isSelected() {
-        return selected;
-    }
-    public void setSelected(boolean selected) {
-        this.selected = selected;
     }
     public Army getOccupyingArmy() {
         return occupyingArmy;
@@ -25,14 +19,17 @@ public class Tile {
     public void setControllerFaction(TileStatus controllerFaction) {
         this.controllerFaction = controllerFaction;
     }
-    public int getNumber() {
-        return number;
+    public int getX() {
+        return x;
+    }
+    public int getY() {
+        return y;
     }
     public TileStatus getControllerFaction() {
         return controllerFaction;
     }
     @Override
     public String toString() {
-        return "{" + number + ", " + controllerFaction + "}";
+        return "{(" + x + ", " + y + ") " + controllerFaction + "}";
     }
 }
