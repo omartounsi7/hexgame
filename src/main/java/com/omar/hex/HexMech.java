@@ -157,8 +157,8 @@ The hexagon is drawn in the colour specified in hexgame.COLOURELL.
 		} else {
 			g2.setColor(EMPTYCOLOR);
 			g2.fillPolygon(hex(x,y));
-			g2.setColor(TXTCOLOR);
-			g2.drawString(str, x + r + BORDERS - 15, y + r + BORDERS + 4);
+//			g2.setColor(TXTCOLOR);
+//			g2.drawString(str, x + r + BORDERS - 15, y + r + BORDERS + 4);
 		}
 	}
 

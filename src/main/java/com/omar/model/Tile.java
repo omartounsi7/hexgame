@@ -3,12 +3,12 @@ package com.omar.model;
 public class Tile {
     private final int x;
     private final int y;
-    private TileStatus controllerFaction;
+    private TileStatus tileStatus;
     private Army occupyingArmy;
     public Tile(int x, int y) {
         this.x = x;
         this.y = y;
-        this.controllerFaction = TileStatus.EMPTY;
+        this.tileStatus = TileStatus.EMPTY;
     }
     public Army getOccupyingArmy() {
         return occupyingArmy;
@@ -16,8 +16,8 @@ public class Tile {
     public void setOccupyingArmy(Army occupyingArmy) {
         this.occupyingArmy = occupyingArmy;
     }
-    public void setControllerFaction(TileStatus controllerFaction) {
-        this.controllerFaction = controllerFaction;
+    public void setTileStatus(TileStatus tileStatus) {
+        this.tileStatus = tileStatus;
     }
     public int getX() {
         return x;
@@ -25,11 +25,11 @@ public class Tile {
     public int getY() {
         return y;
     }
-    public TileStatus getControllerFaction() {
-        return controllerFaction;
+    public TileStatus getTileStatus() {
+        return tileStatus;
     }
     @Override
     public String toString() {
-        return "{(" + x + ", " + y + ") " + controllerFaction + "}";
+        return "{(" + x + ", " + y + ") " + tileStatus + "}";
     }
 }

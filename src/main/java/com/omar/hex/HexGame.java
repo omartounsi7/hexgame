@@ -25,10 +25,11 @@ import static com.omar.hex.HexConst.*;
  ***********************************/
 
 public class HexGame {
-	Tile[][] board;
-	Faction[] factions;
-	private GameStatus status;
-	private TurnStatus whoseturn;
+	private MainPanel mainPanel;
+	private Tile[][] board;
+	private Faction[] factions;
+	public static GameStatus status;
+	public static TurnStatus whosturn;
 	private Tile selectedTile;
 	public HexGame() {
 		initGame();
@@ -36,7 +37,6 @@ public class HexGame {
 		createFactions();
 		createAndShowGUI();
 	}
-
 	private void makeMove(){
 //		Faction currPlayer = factions[1];
 //		Faction otherPlayer = factions[0];
@@ -148,10 +148,10 @@ public class HexGame {
 		while(status == GameStatus.ACTIVE){
 			makeMove();
 			System.out.println("hey!");
-			if(whoseturn == TurnStatus.P1TURN){
-				whoseturn = TurnStatus.P2TURN;
-			} else if(whoseturn == TurnStatus.P2TURN){
-				whoseturn = TurnStatus.P1TURN;
+			if(whosturn == TurnStatus.P1TURN){
+				whosturn = TurnStatus.P2TURN;
+			} else if(whosturn == TurnStatus.P2TURN){
+				whosturn = TurnStatus.P1TURN;
 			}
 		}
 		if(status == GameStatus.P1WINS){
@@ -162,8 +162,8 @@ public class HexGame {
 		System.out.println("Game over.");
 	}
 	private void initGame(){
-		this.status = GameStatus.ACTIVE;
-		this.whoseturn = TurnStatus.P1TURN;
+		status = GameStatus.ACTIVE;
+		whosturn = TurnStatus.P1TURN;
 		this.selectedTile = null;
 	}
 	private static String getRandomFactionName(){
@@ -188,8 +188,8 @@ public class HexGame {
 				board[i][y] = new Tile(i , y);
 			}
 		}
-		board[0][0].setControllerFaction(TileStatus.P1OCCUPIED);
-		board[MAPSIZE - 1][MAPSIZE - 1].setControllerFaction(TileStatus.P2OCCUPIED);
+		board[0][0].setTileStatus(TileStatus.P1OCCUPIED);
+		board[MAPSIZE - 1][MAPSIZE - 1].setTileStatus(TileStatus.P2OCCUPIED);
 	}
 	private void createAndShowGUI() {
 		JFrame.setDefaultLookAndFeelDecorated(true);
@@ -202,12 +202,15 @@ public class HexGame {
 		frame.setVisible(true);
 		DrawingPanel panel = new DrawingPanel();
 		frame.add(panel, BorderLayout.CENTER);
-		frame.add(new MainPanel(), BorderLayout.NORTH);
+
+		this.mainPanel = new MainPanel();
+		mainPanel.updateLabel();
+		frame.add(mainPanel, BorderLayout.NORTH);
 	}
 	public class DrawingPanel extends JPanel {
 		public DrawingPanel() {
 			setBackground(BGCOLOR);
-			LineBorder lineBorder = new LineBorder(Color.RED, 2);
+			LineBorder lineBorder = new LineBorder(Color.ORANGE, 2);
 			this.setBorder(lineBorder);
 			MyMouseListener ml = new MyMouseListener();
 			addMouseListener(ml);
@@ -229,10 +232,8 @@ public class HexGame {
 					if(occArmy != null){
 						fp = String.valueOf(occArmy.getFirepower());
 					}
-
-//					HexMech.fillHex(i, j, board[i][j].getControllerFaction(), g2, fp);
-
-					HexMech.fillHex(i, j, board[i][j].getControllerFaction(), g2, i + " " + j);
+					HexMech.fillHex(i, j, board[i][j].getTileStatus(), g2, fp);
+//					HexMech.fillHex(i, j, board[i][j].getControllerFaction(), g2, i + " " + j);
 				}
 			}
 		}
@@ -243,11 +244,9 @@ public class HexGame {
 					return;
 				}
 
-
-
-				if(whoseturn == TurnStatus.P1TURN){
+				if(whosturn == TurnStatus.P1TURN){
 					System.out.println("It is P1's turn");
-				} else if(whoseturn == TurnStatus.P2TURN){
+				} else if(whosturn == TurnStatus.P2TURN){
 					System.out.println("It is P2's turn");
 				}
 
@@ -265,13 +264,13 @@ public class HexGame {
 			}
 			public void selectArmy(Tile startTile){
 				if(startTile.getOccupyingArmy() != null){ // check if clicked tile contains an army
-					if(whoseturn == TurnStatus.P1TURN){ // check whose turn it is
-						if(startTile.getControllerFaction() == TileStatus.P1OCCUPIED){ // check if tile belongs to P1
+					if(whosturn == TurnStatus.P1TURN){ // check whose turn it is
+						if(startTile.getTileStatus() == TileStatus.P1OCCUPIED){ // check if tile belongs to P1
 //							System.out.println("You have clicked a tile that belongs to p1");
 							selectedTile = startTile;
 						}
-					} else if(whoseturn == TurnStatus.P2TURN){
-						if(startTile.getControllerFaction() == TileStatus.P2OCCUPIED){ // check if tile belongs to P2
+					} else if(whosturn == TurnStatus.P2TURN){
+						if(startTile.getTileStatus() == TileStatus.P2OCCUPIED){ // check if tile belongs to P2
 //							System.out.println("You have clicked a tile that belongs to p2");
 							selectedTile = startTile;
 						}
@@ -287,22 +286,22 @@ public class HexGame {
 				if(areAdjacent(endX, endY, x, y)){
 					Army toMove = selectedTile.getOccupyingArmy();
 					selectedTile.setOccupyingArmy(null);
-					selectedTile.setControllerFaction(TileStatus.EMPTY);
+					selectedTile.setTileStatus(TileStatus.EMPTY);
 					endTile.setOccupyingArmy(toMove);
-					if(whoseturn == TurnStatus.P1TURN){
-						endTile.setControllerFaction(TileStatus.P1OCCUPIED);
-						whoseturn = TurnStatus.P2TURN;
-					} else if(whoseturn == TurnStatus.P2TURN){
-						endTile.setControllerFaction(TileStatus.P2OCCUPIED);
-						whoseturn = TurnStatus.P1TURN;
+					if(whosturn == TurnStatus.P1TURN){
+						endTile.setTileStatus(TileStatus.P1OCCUPIED);
+						whosturn = TurnStatus.P2TURN;
+					} else if(whosturn == TurnStatus.P2TURN){
+						endTile.setTileStatus(TileStatus.P2OCCUPIED);
+						whosturn = TurnStatus.P1TURN;
 					}
 					selectedTile = null;
 					System.out.println("You have moved to " + endTile);
+					mainPanel.updateLabel();
 				} else {
 					System.out.println("Incorrect destination!");
 				}
 			}
-
 			public boolean areAdjacent(int endX, int endY, int x, int y){
 				if(x % 2 == 1){ // odd column
 					if(endX == x - 1){
@@ -312,9 +311,6 @@ public class HexGame {
 					} else if (endX == x + 1){
 						return endY == y || endY == y + 1;
 					}
-
-
-
 					return false;
 				} else {
 					if(endX == x - 1){
@@ -326,8 +322,6 @@ public class HexGame {
 					}
 					return false;
 				}
-
-
 			}
 		}
 	}
