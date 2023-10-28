@@ -157,10 +157,10 @@ public class HexGame {
 
 				if(areAdjacent(endX, endY, x, y)){
 					Army offArmy = selectedTile.getOccupyingArmy();
-					selectedTile.setOccupyingArmy(null);
-					selectedTile.setTileStatus(TileStatus.EMPTY);
 					Army defArmy = endTile.getOccupyingArmy();
+
 					if(defArmy == null){ // movement
+						selectedTile.setOccupyingArmy(null);
 						endTile.setOccupyingArmy(offArmy);
 						if(whosturn == TurnStatus.P1TURN){
 							endTile.setTileStatus(TileStatus.P1OCCUPIED);
@@ -168,8 +168,21 @@ public class HexGame {
 							endTile.setTileStatus(TileStatus.P2OCCUPIED);
 						}
 					} else if (defArmy.getOwnerFaction() == offArmy.getOwnerFaction()) { // reinforce
-						defArmy.setFirepower(defArmy.getFirepower() + offArmy.getFirepower());
+						int currFp = defArmy.getFirepower();
+						int inFp = offArmy.getFirepower();
+
+
+						if(currFp + inFp >= 100){
+							defArmy.setFirepower(99);
+							offArmy.setFirepower(currFp + inFp - 99);
+						} else {
+							defArmy.setFirepower(currFp + inFp);
+							selectedTile.setOccupyingArmy(null);
+						}
+
+
 					} else { // combat
+						selectedTile.setOccupyingArmy(null);
 						if(defArmy.getFirepower() >= offArmy.getFirepower()){
 							defArmy.setFirepower(defArmy.getFirepower() - offArmy.getFirepower() + 1);
 						} else {
@@ -184,18 +197,43 @@ public class HexGame {
 					}
 
 					if(whosturn == TurnStatus.P1TURN){
+						updateArmies(1);
 						whosturn = TurnStatus.P2TURN;
 					} else if(whosturn == TurnStatus.P2TURN){
+						updateArmies(2);
 						whosturn = TurnStatus.P1TURN;
 					}
 
 					selectedTile = null;
 					System.out.println("You have moved to " + endTile);
 					mainPanel.updateLabel();
+
 				} else {
 					System.out.println("Incorrect destination!");
 				}
 			}
+
+			public void updateArmies(int faction){
+				for (int i = 0; i< MAPSIZE; i++){
+					for (int j = 0; j< MAPSIZE; j++) {
+						if(board[i][j].getTileStatus().getValue() == faction && board[i][j].getCity() != null){
+							Army occArmy = board[i][j].getOccupyingArmy();
+							if(occArmy == null){
+								board[i][j].setOccupyingArmy(new Army(10, faction - 1));
+							} else {
+								int currFp = occArmy.getFirepower();
+								if(currFp + 10 >= 100){
+									occArmy.setFirepower(currFp + 99 - currFp);
+								} else {
+									occArmy.setFirepower(currFp + 10);
+								}
+							}
+						}
+					}
+				}
+
+			}
+
 			public boolean areAdjacent(int endX, int endY, int x, int y){
 				if(x % 2 == 1){ // odd column
 					if(endX == x - 1){

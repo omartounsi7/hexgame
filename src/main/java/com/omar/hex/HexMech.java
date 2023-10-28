@@ -154,8 +154,10 @@ The hexagon is drawn in the colour specified in hexgame.COLOURELL.
 		g2.setFont(new Font("TimesRoman", Font.BOLD, 10));
 		g2.fillPolygon(hex(x,y));
 		g2.setColor(TXTCOLOR);
-		g2.drawString(str1, x + r + BORDERS - 15, y + r + BORDERS + 4);
-		g2.drawString(str2, x + r + BORDERS - 2, y + r + BORDERS + 15);
+		g2.drawString(str1, x + r + BORDERS - 15, y + r + BORDERS + 4); // cities
+
+		// Make armies more visible!
+		g2.drawString(str2, x + r + BORDERS - 2, y + r + BORDERS + 15); // armies
 	}
 
 	//This function changes pixel location from a mouse click to a hex grid location
