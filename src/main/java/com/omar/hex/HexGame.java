@@ -44,7 +44,7 @@ public class HexGame {
 			for (int y = 0; y < MAPSIZE; y++) {
 				board[x][y] = new Tile(x, y);
 				boolean isCapital = (x == 0 && y == 0) || (x == MAPSIZE - 1 && y == MAPSIZE - 1);
-				if (random.nextDouble() <= 0.35 || isCapital) {
+				if (random.nextDouble() <= 0.2 || isCapital) {
 					int randomCityIndex = random.nextInt(CityNames.cityNames.length);
 					String cityName = CityNames.cityNames[randomCityIndex];
 					board[x][y].setCity(cityName);
