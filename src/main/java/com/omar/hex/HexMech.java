@@ -139,27 +139,25 @@ The hexagon is drawn in the colour specified in hexgame.COLOURELL.
 	  The colour is set by hexgame.COLOURONE and hexgame.COLOURTWO.
 	  The value of n is converted to letter and drawn in the hexagon.
 *****************************************************************************/
-	public static void fillHex(int i, int j, TileStatus status, Graphics2D g2, String str) {
+	public static void fillHex(int i, int j, TileStatus status, Graphics2D g2, String str1, String str2) {
 		int x = i * (s+t);
 		int y = j * h + (i%2) * h/2;
 
 		if (status == TileStatus.P1OCCUPIED) {
 			g2.setColor(P1COLOR);
-			g2.fillPolygon(hex(x,y));
-			g2.setColor(TXTCOLOR);
-			g2.drawString(str, x + r + BORDERS - 15, y + r + BORDERS + 4);
-
 		} else if (status == TileStatus.P2OCCUPIED) {
 			g2.setColor(P2COLOR);
-			g2.fillPolygon(hex(x,y));
-			g2.setColor(TXTCOLOR);
-			g2.drawString(str, x + r + BORDERS - 15, y + r + BORDERS + 4);
 		} else {
 			g2.setColor(EMPTYCOLOR);
-			g2.fillPolygon(hex(x,y));
-//			g2.setColor(TXTCOLOR);
-//			g2.drawString(str, x + r + BORDERS - 15, y + r + BORDERS + 4);
 		}
+
+		g2.setFont(new Font("TimesRoman", Font.BOLD, 10));
+		g2.fillPolygon(hex(x,y));
+		g2.setColor(TXTCOLOR);
+		g2.drawString(str1, x + r + BORDERS - 15, y + r + BORDERS + 4); // cities
+
+		// Make armies more visible!
+		g2.drawString(str2, x + r + BORDERS - 2, y + r + BORDERS + 15); // armies
 	}
 
 	//This function changes pixel location from a mouse click to a hex grid location

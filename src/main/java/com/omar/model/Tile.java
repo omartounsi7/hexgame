@@ -5,10 +5,17 @@ public class Tile {
     private final int y;
     private TileStatus tileStatus;
     private Army occupyingArmy;
+    private String city;
     public Tile(int x, int y) {
         this.x = x;
         this.y = y;
         this.tileStatus = TileStatus.EMPTY;
+    }
+    public String getCity() {
+        return city;
+    }
+    public void setCity(String city) {
+        this.city = city;
     }
     public Army getOccupyingArmy() {
         return occupyingArmy;
