@@ -10,6 +10,7 @@ import java.awt.*;
 
 public class MainPanel extends JPanel {
     private final StatusLabel statusLabel;
+    private final MovesLabel movesLabel;
     public MainPanel(){
         this.setBackground(Color.BLACK);
         this.setBounds(0,0,475,200);
@@ -17,14 +18,14 @@ public class MainPanel extends JPanel {
         this.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.add(new TitleLabel());
         this.statusLabel = new StatusLabel();
+        this.movesLabel = new MovesLabel();
         this.add(statusLabel);
+        this.add(movesLabel);
         this.add(new EndTurnButton());
         this.add(new CapitulateButton());
-
         LineBorder lineBorder = new LineBorder(Color.ORANGE, 2);
         this.setBorder(lineBorder);
     }
-
     public void updateLabel() {
         if (HexGame.status == GameStatus.ACTIVE) {
             if (HexGame.whosturn == TurnStatus.P1TURN) {
@@ -32,6 +33,7 @@ public class MainPanel extends JPanel {
             } else {
                 statusLabel.setText("Greenland's move.");
             }
+            movesLabel.setText("Turns remaining: " + HexGame.numberOfMoves);
         } else if (HexGame.status == GameStatus.P1WINS) {
             statusLabel.setText("Redosia wins!");
         } else {
