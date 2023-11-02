@@ -212,7 +212,6 @@ public class HexGame {
 					System.out.println("Incorrect destination!");
 				}
 			}
-
 			public void updateArmies(int faction){
 				for (int i = 0; i< MAPSIZE; i++){
 					for (int j = 0; j< MAPSIZE; j++) {
@@ -233,23 +232,20 @@ public class HexGame {
 				}
 
 			}
-
 			public boolean areAdjacent(int endX, int endY, int x, int y){
+				if (endX == x) {
+					return endY == y - 1 || endY == y + 1 || endY == y - 2 || endY == y + 2;
+				} else if(endX == x - 2 || endX == x + 2) {
+					return endY == y || endY == y - 1 || endY == y + 1;
+				}
+
 				if(x % 2 == 1){ // odd column
-					if(endX == x - 1){
-						return endY == y || endY == y + 1;
-					} else if (endX == x){
-						return endY == y - 1 || endY == y + 1;
-					} else if (endX == x + 1){
-						return endY == y || endY == y + 1;
+					if(endX == x - 1 || endX == x + 1){
+						return endY == y || endY == y + 1 || endY == y - 1 || endY == y + 2;
 					}
-                } else {
-					if(endX == x - 1){
-						return endY == y || endY == y - 1;
-					} else if (endX == x){
-						return endY == y - 1 || endY == y + 1;
-					} else if (endX == x + 1){
-						return endY == y || endY == y - 1;
+                } else { // even column
+					if(endX == x - 1 || endX == x + 1){
+						return endY == y || endY == y - 1 || endY == y - 2 || endY == y + 1;
 					}
                 }
                 return false;
