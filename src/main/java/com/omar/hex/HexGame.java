@@ -122,6 +122,10 @@ public class HexGame {
 					return;
 				}
 
+				if (status == GameStatus.P1WINS || status == GameStatus.P2WINS){
+					return;
+				}
+
 				if(whosturn == TurnStatus.P1TURN){
 					System.out.println("It is P1's turn");
 				} else if(whosturn == TurnStatus.P2TURN){
@@ -167,6 +171,12 @@ public class HexGame {
 		int endY = endTile.getY();
 		int x = selectedTile.getX(); // starting x
 		int y = selectedTile.getY(); // starting y
+
+		if(x == endX && y == endY){
+			selectedTile = null;
+			return;
+		}
+
 		if(areAdjacent(endX, endY, x, y)){
 			Army offArmy = selectedTile.getOccupyingArmy();
 			Army defArmy = endTile.getOccupyingArmy();
@@ -207,10 +217,19 @@ public class HexGame {
 			System.out.println("You have moved to " + endTile);
 			movedArmies.add(offArmy);
 			numberOfMoves--;
+			checkVictory();
 //			updateTurn();
 //			mainPanel.updateLabel();
 		} else {
 			System.out.println("Incorrect destination!");
+		}
+	}
+	public void checkVictory(){
+		if(board[0][0].getTileStatus() == TileStatus.P2OCCUPIED){
+			status = GameStatus.P2WINS;
+		}
+		else if(board[MAPSIZE - 1][MAPSIZE - 1].getTileStatus() == TileStatus.P1OCCUPIED){
+			status = GameStatus.P1WINS;
 		}
 	}
 	public boolean areAdjacent(int endX, int endY, int x, int y){
