@@ -234,18 +234,107 @@ public class HexGame {
 	}
 	public boolean areAdjacent(int endX, int endY, int x, int y){
 		if (endX == x) {
-			return endY == y - 1 || endY == y + 1 || endY == y - 2 || endY == y + 2;
-		} else if(endX == x - 2 || endX == x + 2) {
-			return endY == y || endY == y - 1 || endY == y + 1;
+			if(endY == y - 1 || endY == y + 1){
+				return true;
+			}
+			if(endY == y - 2){
+				return board[x][y - 1].getOccupyingArmy() == null;
+			}
+			if(endY == y + 2){
+				return board[x][y + 1].getOccupyingArmy() == null;
+			}
 		}
 
 		if(x % 2 == 1){ // odd column
-			if(endX == x - 1 || endX == x + 1){
-				return endY == y || endY == y + 1 || endY == y - 1 || endY == y + 2;
+			if(endX == x - 1){
+				if(endY == y || endY == y + 1){
+					return true;
+				}
+				if(endY == y - 1){
+					return board[x - 1][y].getOccupyingArmy() == null || board[x][y - 1].getOccupyingArmy() == null;
+				}
+				if(endY == y + 2){
+					return board[x - 1][y + 1].getOccupyingArmy() == null || board[x][y + 1].getOccupyingArmy() == null;
+				}
 			}
+			if(endX == x + 1){
+				if(endY == y || endY == y + 1){
+					return true;
+				}
+				if(endY == y - 1){
+					return board[x][y - 1].getOccupyingArmy() == null || board[x + 1][y].getOccupyingArmy() == null;
+				}
+				if(endY == y + 2){
+					return board[x][y + 1].getOccupyingArmy() == null || board[x + 1][y + 1].getOccupyingArmy() == null;
+				}
+			}
+			if(endX == x - 2) {
+				if(endY == y){
+					return board[x - 1][y].getOccupyingArmy() == null || board[x - 1][y + 1].getOccupyingArmy() == null; // HERE!
+				}
+				if(endY == y - 1){
+					return board[x - 1][y].getOccupyingArmy() == null;
+				}
+				if(endY == y + 1){
+					return board[x - 1][y + 1].getOccupyingArmy() == null;
+				}
+			}
+			if(endX == x + 2) {
+				if(endY == y){
+					return board[x + 1][y].getOccupyingArmy() == null || board[x + 1][y + 1].getOccupyingArmy() == null; // HERE!
+				}
+				if(endY == y - 1){
+					return board[x + 1][y].getOccupyingArmy() == null;
+				}
+				if(endY == y + 1){
+					return board[x + 1][y + 1].getOccupyingArmy() == null;
+				}
+			}
+
 		} else { // even column
-			if(endX == x - 1 || endX == x + 1){
-				return endY == y || endY == y - 1 || endY == y - 2 || endY == y + 1;
+			if(endX == x - 1){
+				if(endY == y || endY == y - 1){
+					return true;
+				}
+				if(endY == y - 2){
+					return board[x - 1][y - 1].getOccupyingArmy() == null || board[x][y - 1].getOccupyingArmy() == null;
+				}
+				if(endY == y + 1){
+					return board[x - 1][y].getOccupyingArmy() == null || board[x][y + 1].getOccupyingArmy() == null;
+				}
+			}
+			if(endX == x + 1){
+				if(endY == y || endY == y - 1){
+					return true;
+				}
+				if(endY == y - 2){
+					return board[x + 1][y - 1].getOccupyingArmy() == null || board[x][y - 1].getOccupyingArmy() == null;
+				}
+				if(endY == y + 1){
+					return board[x + 1][y].getOccupyingArmy() == null || board[x][y + 1].getOccupyingArmy() == null;
+				}
+			}
+			if(endX == x - 2) {
+				if(endY == y){
+					return board[x - 1][y].getOccupyingArmy() == null || board[x - 1][y - 1].getOccupyingArmy() == null; // HERE!
+				}
+				if(endY == y - 1){
+					return board[x - 1][y - 1].getOccupyingArmy() == null;
+				}
+				if(endY == y + 1){
+					return board[x - 1][y].getOccupyingArmy() == null;
+				}
+			}
+			if(endX == x + 2) {
+				if(endY == y){
+					return board[x + 1][y].getOccupyingArmy() == null || board[x + 1][y - 1].getOccupyingArmy() == null; // HERE!
+				}
+				if(endY == y - 1){
+					return board[x + 1][y - 1].getOccupyingArmy() == null;
+				}
+				if(endY == y + 1){
+					return board[x + 1][y].getOccupyingArmy() == null;
+				}
 			}
 		}
 		return false;
