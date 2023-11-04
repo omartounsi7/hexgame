@@ -110,7 +110,7 @@ public class HexGame {
 						str2 += String.valueOf(occArmy.getFirepower());
 					}
 
-					HexMech.fillHex(i, j, board[i][j].getTileStatus(), g2, str1, str2);
+					HexMech.fillHex(i, j, board[i][j].getTileStatus(), g2, str1, str2, board[i][j] == selectedTile);
 					repaint();
 				}
 			}
