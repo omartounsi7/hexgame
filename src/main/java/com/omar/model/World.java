@@ -84,7 +84,6 @@ public class World {
         int x = selectedTile.getX(); // starting x
         int y = selectedTile.getY(); // starting y
 
-
         if(x == endX && y == endY){
             selectedTile = null;
             for (int[] adjacentTile : adjacentTiles) {
