@@ -7,11 +7,8 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.event.*;
+import java.util.*;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
 
 import static com.omar.hex.HexConst.*;
 
@@ -25,12 +22,15 @@ import static com.omar.hex.HexConst.*;
  ***********************************/
 
 public class HexGame {
-	private AI ai = new AI();
+	private List<Army> playerArmies = new LinkedList<>();
+	private List<Army> aiArmies = new LinkedList<>();
+	Map<int[], List<int[]>> movesMap = new HashMap<>();
 	private MainPanel mainPanel;
 	private Tile[][] board;
 	public static GameStatus status = GameStatus.ACTIVE;
 	public static TurnStatus whosturn = TurnStatus.P1TURN;
-	public static int numberOfMoves = 3;
+	public static int numberOfMoves = 1;
+	private int turn = 0;
 	public Set<Army> movedArmies = new HashSet<>();
 	private Tile selectedTile;
 	private List<int[]> adjacentTiles;
@@ -56,11 +56,14 @@ public class HexGame {
 				}
 			}
 		}
+		Army firstRedArmy = new Army(10, 0, 0, 0);
+		playerArmies.add(firstRedArmy);
+		board[0][0].setOccupyingArmy(firstRedArmy);
 
-		board[0][0].setOccupyingArmy(new Army(10, 0, 0, 0));
 		Army firstGreenArmy = new Army(10, 1, MAPSIZE - 1, MAPSIZE - 1);
-		ai.getArmies().add(firstGreenArmy);
+		aiArmies.add(firstGreenArmy);
 		board[MAPSIZE - 1][MAPSIZE - 1].setOccupyingArmy(firstGreenArmy);
+
 		board[0][0].setTileStatus(TileStatus.P1OCCUPIED);
 		board[MAPSIZE - 1][MAPSIZE - 1].setTileStatus(TileStatus.P2OCCUPIED);
 	}
@@ -138,7 +141,7 @@ public class HexGame {
 				Tile clickedTile = board[p.x][p.y];
 				System.out.println("You have clicked " + clickedTile);
 
-				System.out.println("Green armies are: " + ai.getArmies());
+
 
 				if(selectedTile == null){ // we have yet to select an army
 					System.out.println("Selection phase.");
@@ -147,6 +150,9 @@ public class HexGame {
 					System.out.println("Movement phase.");
 					moveArmy(clickedTile);
 				}
+
+				System.out.println("Red armies are: " + playerArmies);
+				System.out.println("Green armies are: " + aiArmies);
 //				repaint();
 			}
 		}
@@ -175,11 +181,6 @@ public class HexGame {
 						}
 					}
 				}
-			}
-		}
-		for (int i = 0; i< MAPSIZE; i++) {
-			for (int j = 0; j< MAPSIZE; j++) {
-				System.out.println(board[i][j].isAdjacent());
 			}
 		}
 	}
@@ -223,7 +224,9 @@ public class HexGame {
 					defArmy.setFirepower(currFp + inFp);
 					selectedTile.setOccupyingArmy(null);
 					if(selectedTile.getTileStatus() == TileStatus.P2OCCUPIED){
-						ai.getArmies().remove(offArmy);
+						aiArmies.remove(offArmy);
+					} else if(selectedTile.getTileStatus() == TileStatus.P1OCCUPIED){
+						playerArmies.remove(offArmy);
 					}
 				}
 			} else { // combat
@@ -231,11 +234,15 @@ public class HexGame {
 				if(defArmy.getFirepower() >= offArmy.getFirepower()){
 					defArmy.setFirepower(defArmy.getFirepower() - offArmy.getFirepower() + 1);
 					if(selectedTile.getTileStatus() == TileStatus.P2OCCUPIED){
-						ai.getArmies().remove(offArmy);
+						aiArmies.remove(offArmy);
+					}  else if(selectedTile.getTileStatus() == TileStatus.P1OCCUPIED){
+						playerArmies.remove(offArmy);
 					}
 				} else {
 					if(endTile.getTileStatus() == TileStatus.P2OCCUPIED){
-						ai.getArmies().remove(defArmy);
+						aiArmies.remove(defArmy);
+					}  else if(endTile.getTileStatus() == TileStatus.P1OCCUPIED){
+						playerArmies.remove(defArmy);
 					}
 					offArmy.setFirepower(offArmy.getFirepower() - defArmy.getFirepower());
 					endTile.setOccupyingArmy(offArmy);
@@ -255,6 +262,15 @@ public class HexGame {
 			checkVictory();
 //			updateTurn();
 //			mainPanel.updateLabel();
+
+
+			// THIS IS WHERE THE AI WILL MAKE ITS MOVES
+			if(numberOfMoves == 0){
+				System.out.println("It is now my turn to play 1");
+				System.out.println("It is now my turn to play 2");
+				System.out.println("It is now my turn to play 3");
+			}
+
 
 			for (int[] adjacentTile : adjacentTiles) {
 				board[adjacentTile[0]][adjacentTile[1]].setAdjacent(false);
@@ -388,7 +404,9 @@ public class HexGame {
 						Army newArmy = new Army(10, faction - 1, i, j);
 						board[i][j].setOccupyingArmy(newArmy);
 						if(board[i][j].getTileStatus() == TileStatus.P2OCCUPIED){
-							ai.getArmies().add(newArmy);
+							aiArmies.add(newArmy);
+						} else if(board[i][j].getTileStatus() == TileStatus.P1OCCUPIED){
+							playerArmies.add(newArmy);
 						}
 					} else {
 						int currFp = occArmy.getFirepower();
@@ -407,9 +425,19 @@ public class HexGame {
 		if(numberOfMoves == 0){
 			numberOfMoves = 3;
 			if(whosturn == TurnStatus.P1TURN){
+
+				if(aiArmies.size() < 3){
+					numberOfMoves = aiArmies.size();
+				}
+
 				updateArmies(1);
 				whosturn = TurnStatus.P2TURN;
 			} else if(whosturn == TurnStatus.P2TURN){
+
+				if(playerArmies.size() < 3){
+					numberOfMoves = playerArmies.size();
+				}
+
 				updateArmies(2);
 				whosturn = TurnStatus.P1TURN;
 			}
@@ -419,7 +447,7 @@ public class HexGame {
 	public List<int[]> getAdjacent(int x, int y){
 		List<int[]> adj = new ArrayList<>();
 
-//		adj.add(new int[]{x,y}); // SELF
+		adj.add(new int[]{x,y}); // SELF
 
 		if(y - 1 >= 0){
 			adj.add(new int[]{x,y - 1});
@@ -530,5 +558,10 @@ public class HexGame {
 			}
 		}
 		return adj;
+	}
+	public void possibleMoves(){
+		for(Army army : aiArmies){
+            movesMap.put(new int[]{army.getX(), army.getY()}, getAdjacent(army.getX(), army.getX()));
+		}
 	}
 }

@@ -157,7 +157,7 @@ The hexagon is drawn in the colour specified in hexgame.COLOURELL.
 			g2.setColor(EMPTYCOLOR);
 		}
 
-		if(adj){
+		if(adj && !selected){
 			g2.setColor(Color.YELLOW);
 		}
 
