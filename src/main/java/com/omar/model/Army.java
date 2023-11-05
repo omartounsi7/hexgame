@@ -3,9 +3,29 @@ package com.omar.model;
 public class Army {
     private int firepower;
     private final int ownerFaction;
+    private int x;
+    private int y;
     public Army(int firepower, int ownerFaction) {
         this.firepower = firepower;
         this.ownerFaction = ownerFaction;
+    }
+    public Army(int firepower, int ownerFaction, int x, int y) {
+        this.firepower = firepower;
+        this.ownerFaction = ownerFaction;
+        this.x = x;
+        this.y = y;
+    }
+    public int getY() {
+        return y;
+    }
+    public void setY(int y) {
+        this.y = y;
+    }
+    public int getX() {
+        return x;
+    }
+    public void setX(int x) {
+        this.x = x;
     }
     public int getOwnerFaction() {
         return ownerFaction;
@@ -18,6 +38,6 @@ public class Army {
     }
     @Override
     public String toString() {
-        return "Firepower = " + firepower;
+        return "FP = " + firepower + " (" + x + ", " + y + ")";
     }
 }

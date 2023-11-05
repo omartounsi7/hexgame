@@ -1,9 +1,6 @@
 package com.omar.hex;
 
-import com.omar.model.Army;
-import com.omar.model.CityNames;
-import com.omar.model.Tile;
-import com.omar.model.TileStatus;
+import com.omar.model.*;
 import com.omar.gui.MainPanel;
 
 import java.awt.*;
@@ -26,6 +23,7 @@ import static com.omar.hex.HexConst.*;
  ***********************************/
 
 public class HexGame {
+	private AI ai = new AI();
 	private MainPanel mainPanel;
 	private Tile[][] board;
 	public static GameStatus status = GameStatus.ACTIVE;
@@ -56,8 +54,10 @@ public class HexGame {
 			}
 		}
 
-		board[0][0].setOccupyingArmy(new Army(10, 0));
-		board[MAPSIZE - 1][MAPSIZE - 1].setOccupyingArmy(new Army(10, 1));
+		board[0][0].setOccupyingArmy(new Army(10, 0, 0, 0));
+		Army firstGreenArmy = new Army(10, 1, MAPSIZE - 1, MAPSIZE - 1);
+		ai.getArmies().add(firstGreenArmy);
+		board[MAPSIZE - 1][MAPSIZE - 1].setOccupyingArmy(firstGreenArmy);
 		board[0][0].setTileStatus(TileStatus.P1OCCUPIED);
 		board[MAPSIZE - 1][MAPSIZE - 1].setTileStatus(TileStatus.P2OCCUPIED);
 	}
@@ -135,6 +135,8 @@ public class HexGame {
 				Tile clickedTile = board[p.x][p.y];
 				System.out.println("You have clicked " + clickedTile);
 
+				System.out.println("Green armies are: " + ai.getArmies());
+
 				if(selectedTile == null){ // we have yet to select an army
 					System.out.println("Selection phase.");
 					selectArmy(clickedTile);
@@ -184,6 +186,8 @@ public class HexGame {
 			if(defArmy == null){ // movement
 				selectedTile.setOccupyingArmy(null);
 				endTile.setOccupyingArmy(offArmy);
+				offArmy.setX(endX);
+				offArmy.setY(endY);
 				if(whosturn == TurnStatus.P1TURN){
 					endTile.setTileStatus(TileStatus.P1OCCUPIED);
 				} else if(whosturn == TurnStatus.P2TURN){
@@ -198,14 +202,25 @@ public class HexGame {
 				} else {
 					defArmy.setFirepower(currFp + inFp);
 					selectedTile.setOccupyingArmy(null);
+					if(selectedTile.getTileStatus() == TileStatus.P2OCCUPIED){
+						ai.getArmies().remove(offArmy);
+					}
 				}
 			} else { // combat
 				selectedTile.setOccupyingArmy(null);
 				if(defArmy.getFirepower() >= offArmy.getFirepower()){
 					defArmy.setFirepower(defArmy.getFirepower() - offArmy.getFirepower() + 1);
+					if(selectedTile.getTileStatus() == TileStatus.P2OCCUPIED){
+						ai.getArmies().remove(offArmy);
+					}
 				} else {
+					if(endTile.getTileStatus() == TileStatus.P2OCCUPIED){
+						ai.getArmies().remove(defArmy);
+					}
 					offArmy.setFirepower(offArmy.getFirepower() - defArmy.getFirepower());
 					endTile.setOccupyingArmy(offArmy);
+					offArmy.setX(endX);
+					offArmy.setY(endY);
 					if(whosturn == TurnStatus.P1TURN){
 						endTile.setTileStatus(TileStatus.P1OCCUPIED);
 					} else if(whosturn == TurnStatus.P2TURN){
@@ -345,7 +360,11 @@ public class HexGame {
 				if(board[i][j].getTileStatus().getValue() == faction && board[i][j].getCity() != null){
 					Army occArmy = board[i][j].getOccupyingArmy();
 					if(occArmy == null){
-						board[i][j].setOccupyingArmy(new Army(10, faction - 1));
+						Army newArmy = new Army(10, faction - 1, i, j);
+						board[i][j].setOccupyingArmy(newArmy);
+						if(board[i][j].getTileStatus() == TileStatus.P2OCCUPIED){
+							ai.getArmies().add(newArmy);
+						}
 					} else {
 						int currFp = occArmy.getFirepower();
 						if(currFp + 10 >= 100){
