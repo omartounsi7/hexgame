@@ -1,6 +1,6 @@
 package com.omar.gui;
 
-import com.omar.hex.HexGame;
+import com.omar.model.World;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +10,7 @@ public class EndTurnButton extends JButton {
         this.setText("End turn");
         this.setFocusable(false);
         this.addActionListener(e -> {System.out.println("End Turn!");
-            HexGame.numberOfMoves = 0;
+            World.numberOfMoves = 0;
         });
         this.setAlignmentX(Component.CENTER_ALIGNMENT);
     }

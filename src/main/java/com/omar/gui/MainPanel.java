@@ -1,8 +1,8 @@
 package com.omar.gui;
 
-import com.omar.hex.GameStatus;
-import com.omar.hex.HexGame;
-import com.omar.hex.TurnStatus;
+import com.omar.model.GameStatus;
+import com.omar.model.TurnStatus;
+import com.omar.model.World;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -27,14 +27,14 @@ public class MainPanel extends JPanel {
         this.setBorder(lineBorder);
     }
     public void updateLabel() {
-        if (HexGame.status == GameStatus.ACTIVE) {
-            if (HexGame.whosturn == TurnStatus.P1TURN) {
+        if (World.status == GameStatus.ACTIVE) {
+            if (World.whosturn == TurnStatus.P1TURN) {
                 statusLabel.setText("Redosia's move.");
             } else {
                 statusLabel.setText("Greenland's move.");
             }
-            movesLabel.setText("Turns remaining: " + HexGame.numberOfMoves);
-        } else if (HexGame.status == GameStatus.P1WINS) {
+            movesLabel.setText("Turns remaining: " + World.numberOfMoves);
+        } else if (World.status == GameStatus.P1WINS) {
             statusLabel.setText("Redosia wins!");
         } else {
             statusLabel.setText("Greenland wins!");
