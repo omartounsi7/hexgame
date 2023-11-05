@@ -22,9 +22,9 @@ import static com.omar.hex.HexConst.*;
  ***********************************/
 
 public class HexGame {
+	Map<int[], List<int[]>> movesMap = new HashMap<>();
 	private List<Army> playerArmies = new LinkedList<>();
 	private List<Army> aiArmies = new LinkedList<>();
-	Map<int[], List<int[]>> movesMap = new HashMap<>();
 	private MainPanel mainPanel;
 	private Tile[][] board;
 	public static GameStatus status = GameStatus.ACTIVE;
@@ -135,7 +135,7 @@ public class HexGame {
 				if(whosturn == TurnStatus.P1TURN){
 					System.out.println("It is P1's turn");
 				} else if(whosturn == TurnStatus.P2TURN){
-					System.out.println("It is P2's turn");
+					System.out.println("It is P2's turn. WE SHOULD SKIP THIS NOW AND RETURN");
 				}
 
 				Tile clickedTile = board[p.x][p.y];
@@ -164,7 +164,6 @@ public class HexGame {
 					if(!movedArmies.contains(startTile.getOccupyingArmy())){
 						selectedTile = startTile;
 						adjacentTiles = getAdjacent(startTile.getX(), startTile.getY());
-						System.out.println(adjacentTiles);
                         for (int[] adjacentTile : adjacentTiles) {
                             board[adjacentTile[0]][adjacentTile[1]].setAdjacent(true);
                         }
@@ -262,20 +261,24 @@ public class HexGame {
 			checkVictory();
 //			updateTurn();
 //			mainPanel.updateLabel();
-
-
-			// THIS IS WHERE THE AI WILL MAKE ITS MOVES
-			if(numberOfMoves == 0){
-				System.out.println("It is now my turn to play 1");
-				System.out.println("It is now my turn to play 2");
-				System.out.println("It is now my turn to play 3");
-			}
-
-
 			for (int[] adjacentTile : adjacentTiles) {
 				board[adjacentTile[0]][adjacentTile[1]].setAdjacent(false);
 			}
 			adjacentTiles = null;
+
+
+			// THIS IS WHERE THE AI WILL MAKE ITS MOVES
+			if(numberOfMoves == 0){
+				updateTurn();
+				while(numberOfMoves != 0){
+					aiMove();
+					numberOfMoves--;
+				}
+				updateTurn();
+			}
+
+
+
 		} else {
 			System.out.println("Incorrect destination!");
 		}
@@ -564,4 +567,43 @@ public class HexGame {
             movesMap.put(new int[]{army.getX(), army.getY()}, getAdjacent(army.getX(), army.getX()));
 		}
 	}
+	public void aiMove(){
+		System.out.println("AI has played!");
+		possibleMoves();
+		printMap();
+		movesMap.clear();
+	}
+	public  void printMap() {
+		for (Map.Entry<int[], List<int[]>> entry : movesMap.entrySet()) {
+			int[] key = entry.getKey();
+			List<int[]> values = entry.getValue();
+			System.out.print("Key: ");
+			System.out.print("[");
+			for (int i = 0; i < key.length; i++) {
+				System.out.print(key[i]);
+				if (i < key.length - 1) {
+					System.out.print(", ");
+				}
+			}
+			System.out.println("]");
+			System.out.print("Values: ");
+			for (int[] value : values) {
+				System.out.print("[");
+				for (int i = 0; i < value.length; i++) {
+					System.out.print(value[i]);
+					if (i < value.length - 1) {
+						System.out.print(", ");
+					}
+				}
+				System.out.println("]");
+
+			}
+		}
+
+
+
+
+	}
 }
+
+
