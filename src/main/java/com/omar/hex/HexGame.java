@@ -7,6 +7,8 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.event.*;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -31,6 +33,7 @@ public class HexGame {
 	public static int numberOfMoves = 3;
 	public Set<Army> movedArmies = new HashSet<>();
 	private Tile selectedTile;
+	private List<int[]> adjacentTiles;
 	public HexGame() {
 		createMap();
 		createAndShowGUI();
@@ -110,7 +113,7 @@ public class HexGame {
 						str2 += String.valueOf(occArmy.getFirepower());
 					}
 
-					HexMech.fillHex(i, j, board[i][j].getTileStatus(), g2, str1, str2, board[i][j] == selectedTile);
+					HexMech.fillHex(i, j, board[i][j].getTileStatus(), g2, str1, str2, board[i][j] == selectedTile, board[i][j].isAdjacent());
 					repaint();
 				}
 			}
@@ -152,19 +155,31 @@ public class HexGame {
 		if(startTile.getOccupyingArmy() != null){ // check if clicked tile contains an army
 			if(whosturn == TurnStatus.P1TURN){ // check whose turn it is
 				if(startTile.getTileStatus() == TileStatus.P1OCCUPIED){ // check if tile belongs to P1
-//							System.out.println("You have clicked a tile that belongs to p1");
 					if(!movedArmies.contains(startTile.getOccupyingArmy())){
 						selectedTile = startTile;
+						adjacentTiles = getAdjacent(startTile.getX(), startTile.getY());
+						System.out.println(adjacentTiles);
+                        for (int[] adjacentTile : adjacentTiles) {
+                            board[adjacentTile[0]][adjacentTile[1]].setAdjacent(true);
+                        }
 					}
 
 				}
 			} else if(whosturn == TurnStatus.P2TURN){
 				if(startTile.getTileStatus() == TileStatus.P2OCCUPIED){ // check if tile belongs to P2
-//							System.out.println("You have clicked a tile that belongs to p2");
 					if(!movedArmies.contains(startTile.getOccupyingArmy())){
 						selectedTile = startTile;
+						adjacentTiles = getAdjacent(startTile.getX(), startTile.getY());
+						for (int[] adjacentTile : adjacentTiles) {
+							board[adjacentTile[0]][adjacentTile[1]].setAdjacent(true);
+						}
 					}
 				}
+			}
+		}
+		for (int i = 0; i< MAPSIZE; i++) {
+			for (int j = 0; j< MAPSIZE; j++) {
+				System.out.println(board[i][j].isAdjacent());
 			}
 		}
 	}
@@ -174,8 +189,13 @@ public class HexGame {
 		int x = selectedTile.getX(); // starting x
 		int y = selectedTile.getY(); // starting y
 
+
 		if(x == endX && y == endY){
 			selectedTile = null;
+			for (int[] adjacentTile : adjacentTiles) {
+				board[adjacentTile[0]][adjacentTile[1]].setAdjacent(false);
+			}
+			adjacentTiles = null;
 			return;
 		}
 
@@ -235,6 +255,11 @@ public class HexGame {
 			checkVictory();
 //			updateTurn();
 //			mainPanel.updateLabel();
+
+			for (int[] adjacentTile : adjacentTiles) {
+				board[adjacentTile[0]][adjacentTile[1]].setAdjacent(false);
+			}
+			adjacentTiles = null;
 		} else {
 			System.out.println("Incorrect destination!");
 		}
@@ -390,5 +415,120 @@ public class HexGame {
 			}
 			movedArmies.clear();
 		}
+	}
+	public List<int[]> getAdjacent(int x, int y){
+		List<int[]> adj = new ArrayList<>();
+
+//		adj.add(new int[]{x,y}); // SELF
+
+		if(y - 1 >= 0){
+			adj.add(new int[]{x,y - 1});
+		}
+		if(y + 1 < MAPSIZE){
+			adj.add(new int[]{x,y + 1});
+		}
+		if(y - 2 >= 0 && board[x][y - 1].getOccupyingArmy() == null){
+			adj.add(new int[]{x,y - 2});
+		}
+		if(y + 2 < MAPSIZE && board[x][y + 1].getOccupyingArmy() == null){
+			adj.add(new int[]{x,y + 2});
+		}
+
+		if(x % 2 == 1){ // odd column
+			if(x - 1 >= 0){
+				adj.add(new int[]{x - 1,y});
+				if(y + 1 < MAPSIZE){
+					adj.add(new int[]{x - 1,y + 1});
+				}
+				if(y - 1 >= 0 && (board[x - 1][y].getOccupyingArmy() == null || board[x][y - 1].getOccupyingArmy() == null)){
+					adj.add(new int[]{x - 1,y - 1});
+				}
+				if(y + 2 < MAPSIZE && (board[x - 1][y + 1].getOccupyingArmy() == null || board[x][y + 1].getOccupyingArmy() == null)){
+					adj.add(new int[]{x - 1,y + 2});
+				}
+			}
+			if(x + 1 < MAPSIZE){
+				adj.add(new int[]{x + 1,y});
+				if(y + 1 < MAPSIZE){
+					adj.add(new int[]{x + 1,y + 1});
+				}
+				if(y - 1 >= 0 && (board[x][y - 1].getOccupyingArmy() == null || board[x + 1][y].getOccupyingArmy() == null)){
+					adj.add(new int[]{x + 1,y - 1});
+				}
+				if(y + 2 < MAPSIZE && (board[x][y + 1].getOccupyingArmy() == null || board[x + 1][y + 1].getOccupyingArmy() == null)){
+					adj.add(new int[]{x + 1,y + 2});
+				}
+			}
+			if(x - 2 >= 0) {
+				if(board[x - 1][y].getOccupyingArmy() == null || board[x - 1][y + 1].getOccupyingArmy() == null){
+					adj.add(new int[]{x - 2,y});
+				}
+				if(y - 1 >= 0 && board[x - 1][y].getOccupyingArmy() == null){
+					adj.add(new int[]{x - 2,y - 1});
+				}
+				if(y + 1 < MAPSIZE && board[x - 1][y + 1].getOccupyingArmy() == null){
+					adj.add(new int[]{x - 2,y + 1});
+				}
+			}
+			if(x + 2 < MAPSIZE) {
+				if(board[x + 1][y].getOccupyingArmy() == null || board[x + 1][y + 1].getOccupyingArmy() == null){
+					adj.add(new int[]{x + 2,y});
+				}
+				if(y - 1 >= 0 && board[x + 1][y].getOccupyingArmy() == null){
+					adj.add(new int[]{x + 2,y - 1});
+				}
+				if(y + 1 < MAPSIZE && board[x + 1][y + 1].getOccupyingArmy() == null){
+					adj.add(new int[]{x + 2,y + 1});
+				}
+			}
+		} else { // even column
+			if(x - 1 >= 0){
+				adj.add(new int[]{x - 1,y});
+				if(y - 1 >= 0){
+					adj.add(new int[]{x - 1,y - 1});
+				}
+				if(y - 2 >= 0 && (board[x - 1][y - 1].getOccupyingArmy() == null || board[x][y - 1].getOccupyingArmy() == null)){
+					adj.add(new int[]{x - 1,y - 2});
+				}
+				if(y + 1 < MAPSIZE && (board[x - 1][y].getOccupyingArmy() == null || board[x][y + 1].getOccupyingArmy() == null)){
+					adj.add(new int[]{x - 1,y + 1});
+				}
+			}
+			if(x + 1 < MAPSIZE){
+				adj.add(new int[]{x + 1,y});
+				if(y - 1 >= 0){
+					adj.add(new int[]{x + 1,y - 1});
+				}
+				if(y - 2 >= 0 && (board[x + 1][y - 1].getOccupyingArmy() == null || board[x][y - 1].getOccupyingArmy() == null)){
+					adj.add(new int[]{x + 1,y - 2});
+				}
+				if(y + 1 < MAPSIZE && (board[x + 1][y].getOccupyingArmy() == null || board[x][y + 1].getOccupyingArmy() == null)){
+					adj.add(new int[]{x + 1,y + 1});
+				}
+			}
+			if(x - 2 >= 0) {
+				if(board[x - 1][y].getOccupyingArmy() == null || board[x - 1][y - 1].getOccupyingArmy() == null){
+					adj.add(new int[]{x - 2,y});
+				}
+				if(y - 1 >= 0 && board[x - 1][y - 1].getOccupyingArmy() == null){
+					adj.add(new int[]{x - 2,y - 1});
+				}
+				if(y + 1 < MAPSIZE && board[x - 1][y].getOccupyingArmy() == null){
+					adj.add(new int[]{x - 2,y + 1});
+				}
+			}
+			if(x + 2 < MAPSIZE) {
+				if(board[x + 1][y].getOccupyingArmy() == null || board[x + 1][y - 1].getOccupyingArmy() == null){
+					adj.add(new int[]{x + 2,y});
+				}
+				if(y - 1 >= 0 && board[x + 1][y - 1].getOccupyingArmy() == null){
+					adj.add(new int[]{x + 2,y - 1});
+				}
+				if(y + 1 < MAPSIZE && board[x + 1][y].getOccupyingArmy() == null){
+					adj.add(new int[]{x + 2,y + 1});
+				}
+			}
+		}
+		return adj;
 	}
 }

@@ -139,7 +139,7 @@ The hexagon is drawn in the colour specified in hexgame.COLOURELL.
 	  The colour is set by hexgame.COLOURONE and hexgame.COLOURTWO.
 	  The value of n is converted to letter and drawn in the hexagon.
 *****************************************************************************/
-	public static void fillHex(int i, int j, TileStatus status, Graphics2D g2, String str1, String str2, Boolean selected) {
+	public static void fillHex(int i, int j, TileStatus status, Graphics2D g2, String str1, String str2, Boolean selected, Boolean adj) {
 		int x = i * (s+t);
 		int y = j * h + (i%2) * h/2;
 
@@ -155,6 +155,10 @@ The hexagon is drawn in the colour specified in hexgame.COLOURELL.
 			}
 		} else {
 			g2.setColor(EMPTYCOLOR);
+		}
+
+		if(adj){
+			g2.setColor(Color.YELLOW);
 		}
 
 

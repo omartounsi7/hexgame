@@ -6,10 +6,18 @@ public class Tile {
     private TileStatus tileStatus;
     private Army occupyingArmy;
     private String city;
+    private boolean adjacent;
     public Tile(int x, int y) {
         this.x = x;
         this.y = y;
         this.tileStatus = TileStatus.EMPTY;
+        this.adjacent = false;
+    }
+    public boolean isAdjacent() {
+        return adjacent;
+    }
+    public void setAdjacent(boolean adjacent) {
+        this.adjacent = adjacent;
     }
     public String getCity() {
         return city;
