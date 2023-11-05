@@ -1,6 +1,6 @@
 package com.omar.model;
 
-public class Tile {
+public class Tile implements Cloneable {
     private final int x;
     private final int y;
     private TileStatus tileStatus;
@@ -46,5 +46,18 @@ public class Tile {
     @Override
     public String toString() {
         return "{(" + x + ", " + y + ") " + tileStatus + "}";
+    }
+
+    @Override
+    public Tile clone() {
+        try {
+            Tile clonedTile = (Tile) super.clone();
+            if (this.occupyingArmy != null) {
+                clonedTile.occupyingArmy = this.occupyingArmy.clone();
+            }
+            return clonedTile;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(e);
+        }
     }
 }

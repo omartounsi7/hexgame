@@ -27,7 +27,6 @@ public class HexGame {
 		world = new World(new LinkedList<>(), new LinkedList<>());
 		createAndShowGUI();
 	}
-
 	private void createAndShowGUI() {
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		JFrame frame = new JFrame("HexWars");
@@ -104,7 +103,11 @@ public class HexGame {
 					world.selectArmy(clickedTile);
 				} else { // an army has already been selected and is about to be moved
 					System.out.println("Movement phase.");
-					world.moveArmy(clickedTile);
+					try {
+						world.moveArmy(world.selectedTile.getX(), world.selectedTile.getY(), p.x, p.y, world.board.getBoard());
+					} catch (InterruptedException ex) {
+						throw new RuntimeException(ex);
+					}
 				}
 			}
 		}
