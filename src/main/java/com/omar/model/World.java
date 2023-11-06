@@ -7,7 +7,6 @@ import java.util.*;
 import static com.omar.hex.HexConst.*;
 
 public class World {
-    Map<int[], List<int[]>> aiMoves = new HashMap<>();
     public Board board;
     private final List<Army> redArmies;
     private final List<Army> greenArmies;
@@ -80,7 +79,7 @@ public class World {
             }
         }
     }
-    public void moveArmy(int x, int y, int endX, int endY, Tile[][] state) throws InterruptedException {
+    public void moveArmy(int x, int y, int endX, int endY, Tile[][] state) {
         Tile startTile = state[x][y];
         Tile endTile = state[endX][endY];
 
@@ -93,7 +92,6 @@ public class World {
                 state[adjacentTile[0]][adjacentTile[1]].setAdjacent(false);
             }
             adjacentTiles.clear();
-//            adjacentTiles = null;
             return;
         }
 
@@ -152,15 +150,14 @@ public class World {
                     }
                 }
             }
-            if(selectedTile == startTile){
-                selectedTile = null;
-            }
-
             movedArmies.add(offArmy);
             numberOfMoves--;
             checkVictory();
 
-            if(whosturn == TurnStatus.P1TURN){
+            if(whosturn != TurnStatus.P2TURN){
+                if(selectedTile == startTile){
+                    selectedTile = null;
+                }
                 for (int[] adjacentTile : adjacentTiles) {
                     state[adjacentTile[0]][adjacentTile[1]].setAdjacent(false);
                 }
@@ -231,7 +228,7 @@ public class World {
             }
             if(endX == x - 2) {
                 if(endY == y){
-                    return getTile(x - 1,y).getOccupyingArmy() == null || getTile(x - 1,y + 1).getOccupyingArmy() == null; // HERE!
+                    return getTile(x - 1,y).getOccupyingArmy() == null || (y + 1 < MAPSIZE && getTile(x - 1,y + 1).getOccupyingArmy() == null); // HERE!
                 }
                 if(endY == y - 1){
                     return getTile(x - 1,y).getOccupyingArmy() == null;
@@ -242,7 +239,7 @@ public class World {
             }
             if(endX == x + 2) {
                 if(endY == y){
-                    return getTile(x + 1,y).getOccupyingArmy() == null || getTile(x + 1,y + 1).getOccupyingArmy() == null; // HERE!
+                    return getTile(x + 1,y).getOccupyingArmy() == null || (y + 1 < MAPSIZE && getTile(x + 1,y + 1).getOccupyingArmy() == null); // HERE!
                 }
                 if(endY == y - 1){
                     return getTile(x + 1,y).getOccupyingArmy() == null;
@@ -277,7 +274,7 @@ public class World {
             }
             if(endX == x - 2) {
                 if(endY == y){
-                    return getTile(x - 1,y).getOccupyingArmy() == null || getTile(x - 1,y - 1).getOccupyingArmy() == null; // HERE!
+                    return getTile(x - 1,y).getOccupyingArmy() == null || (y - 1 >= 0 && getTile(x - 1,y - 1).getOccupyingArmy() == null); // HERE!
                 }
                 if(endY == y - 1){
                     return getTile(x - 1,y - 1).getOccupyingArmy() == null;
@@ -288,7 +285,7 @@ public class World {
             }
             if(endX == x + 2) {
                 if(endY == y){
-                    return getTile(x + 1,y).getOccupyingArmy() == null || getTile(x + 1,y - 1).getOccupyingArmy() == null; // HERE!
+                    return getTile(x + 1,y).getOccupyingArmy() == null || (y - 1 >= 0 && getTile(x + 1,y - 1).getOccupyingArmy() == null); // HERE!
                 }
                 if(endY == y - 1){
                     return getTile(x + 1,y - 1).getOccupyingArmy() == null;
@@ -418,6 +415,7 @@ public class World {
     public void updateTurn(){
         if(numberOfMoves == 0){
             numberOfMoves = 3;
+//            numberOfMoves = 1;
             if(whosturn == TurnStatus.P1TURN){
 
                 if(greenArmies.size() < 3){
@@ -464,13 +462,42 @@ public class World {
         }
     }
     public int evaluate(Tile[][] state){
-        if(wins(state, 1)){ // GREENLAND WINS
-            return -1;
-        } else if(wins(state, 0)){ // REDOSIA WINS
-            return 1;
-        } else {
-            return 0;
+        int redCities = 0;
+        int greenCities = 0;
+
+        int redArmyStrength = 0;
+        int greenArmyStrength = 0;
+
+        int redArmiesDisttoGreenCap = 0;
+        int greenArmiesDisttoRedCap = 0;
+
+        for (int x = 0; x < MAPSIZE; x++) {
+            for (int y = 0; y < MAPSIZE; y++) {
+                if (state[x][y].getTileStatus() == TileStatus.P1OCCUPIED){
+                    redCities++;
+                } else if (state[x][y].getTileStatus() == TileStatus.P2OCCUPIED) {
+                    greenCities++;
+                }
+
+                if(state[x][y].getOccupyingArmy() != null){
+                    if (state[x][y].getOccupyingArmy().getOwnerFaction() == 0){
+                        redArmyStrength += state[x][y].getOccupyingArmy().getFirepower();
+                        redArmiesDisttoGreenCap += manhattanDist(MAPSIZE - 1, MAPSIZE - 1, x, y);
+                    } else if (state[x][y].getOccupyingArmy().getOwnerFaction() == 1) {
+                        greenArmyStrength += state[x][y].getOccupyingArmy().getFirepower();
+                        greenArmiesDisttoRedCap += manhattanDist(0, 0, x, y);
+                    }
+                }
+            }
         }
+
+        int redScore = redCities + redArmyStrength + greenArmiesDisttoRedCap / 4;
+        int greenScore = greenCities + greenArmyStrength + redArmiesDisttoGreenCap / 4;
+
+        return redScore - greenScore;
+    }
+    static int manhattanDist(int X1, int Y1, int X2, int Y2) {
+        return Math.abs(X2 - X1) + Math.abs(Y2 - Y1);
     }
     public boolean wins(Tile[][] state, int faction) {
         if (faction == 0) {
@@ -552,11 +579,11 @@ public class World {
         }
         return best;
     }
-    public void aiTurn() throws InterruptedException {
+    public void aiTurn() {
         if (game_over(board.getBoard())) {
             return;
         }
-        double[] move = minimax(board, 1, 1);
+        double[] move = minimax(board, 2, 1);
         int startX = (int) move[0];
         int startY = (int) move[1];
         int endX = (int) move[2];
