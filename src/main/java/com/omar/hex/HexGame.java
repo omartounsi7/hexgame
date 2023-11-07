@@ -71,14 +71,12 @@ public class HexGame {
 					String city = currTile.getCity();
 					String str1 = "";
 					String str2 = "";
-
 					if(city != null){
 						str1 += city;
 					}
 					if(occArmy != null){
 						str2 += String.valueOf(occArmy.getFirepower());
 					}
-
 					HexMech.fillHex(i, j, currTile.getTileStatus(), g2, str1, str2, currTile == world.selectedTile, currTile.isAdjacent());
 					repaint();
 				}
@@ -103,7 +101,20 @@ public class HexGame {
 					world.selectArmy(clickedTile);
 				} else { // an army has already been selected and is about to be moved
 					System.out.println("Movement phase.");
-					world.moveArmy(world.selectedTile.getX(), world.selectedTile.getY(), p.x, p.y, world.board.getBoard());
+					world.moveArmy(world.selectedTile.getX(), world.selectedTile.getY(), p.x, p.y);
+					World.numberOfMoves--;
+					world.checkVictory();
+
+					// THIS IS WHERE THE AI WILL MAKE ITS MOVES
+					if(World.numberOfMoves == 0){
+						world.updateTurn();
+						while(World.numberOfMoves != 0){
+							world.aiTurn();
+							World.numberOfMoves--;
+							world.checkVictory();
+						}
+						world.updateTurn();
+					}
 				}
 			}
 		}
