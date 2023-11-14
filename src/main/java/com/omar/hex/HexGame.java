@@ -91,12 +91,7 @@ public class HexGame {
 					world.selectArmy(clickedTile);
 				} else { // an army has already been selected and is about to be moved
 					System.out.println("Movement phase.");
-					world.moveArmy(world.selectedTile.getX(), world.selectedTile.getY(), p.x, p.y, world.board.getBoard(), TurnStatus.P1TURN);
-					world.checkVictory();
-					world.updateArmies(1, world.board.getBoard());
-					world.aiTurn();
-					world.checkVictory();
-					world.updateArmies(2, world.board.getBoard());
+					world.executeMove(p.x, p.y);
 				}
 			}
 		}

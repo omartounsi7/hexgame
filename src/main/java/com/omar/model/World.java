@@ -61,7 +61,7 @@ public class World {
             }
         }
     }
-    public void moveArmy(int x, int y, int endX, int endY, Tile[][] state, TurnStatus whosturn) {
+    public void moveArmy(int x, int y, int endX, int endY, Tile[][] state, TurnStatus whosturn, List<Army> redArmies, List<Army> greenArmies) {
         Tile startTile = state[x][y];
         Tile endTile = state[endX][endY];
 
@@ -361,13 +361,13 @@ public class World {
         }
         return adj;
     }
-    public void updateArmies(int faction, Tile[][] state){
+    public void updateArmies(int faction, Tile[][] state, List<Army> redArmies, List<Army> greenArmies){
         for (int i = 0; i< MAPSIZE; i++){
             for (int j = 0; j< MAPSIZE; j++) {
                 if(state[i][j].getTileStatus().getValue() == faction && state[i][j].getCity() != null){
                     Army occArmy = state[i][j].getOccupyingArmy();
                     if(occArmy == null){
-                        Army newArmy = new Army(10, faction - 1, i, j);
+                        Army newArmy = new Army(10, faction, i, j);
                         state[i][j].setOccupyingArmy(newArmy);
                         if(state[i][j].getTileStatus() == TileStatus.P2OCCUPIED){
                             greenArmies.add(newArmy);
@@ -413,8 +413,8 @@ public class World {
             }
         }
 
-        int redScore = redCities + redArmyStrength + greenArmiesDisttoRedCap / 4;
-        int greenScore = greenCities + greenArmyStrength + redArmiesDisttoGreenCap / 4;
+        int redScore = redCities + redArmyStrength + greenArmiesDisttoRedCap;
+        int greenScore = greenCities + greenArmyStrength + redArmiesDisttoGreenCap;
         return redScore - greenScore;
     }
     static int manhattanDist(int X1, int Y1, int X2, int Y2) {
@@ -429,25 +429,25 @@ public class World {
         best[2] = -1; // best ending x
         best[3] = -1; // best ending y
 
-        if (depth == 0 || status != GameStatus.ACTIVE) {
+        if (depth == 0) {
             best[4] = evaluate(state);
             return best;
         }
 
         if (faction == 0) {
             best[4] = Double.NEGATIVE_INFINITY;
-            for(Army army : redArmies){
+            for(int i = 0 ; i < redArmies.size(); i++){
+                Army army = redArmies.get(i);
                 int startX = army.getX();
                 int startY = army.getY();
                 List<int[]> adjacentCoords = getAdjacent(army.getX(), army.getY(), state);
                 for(int[] coords : adjacentCoords){
                     int endX = coords[0];
                     int endY = coords[1];
-
                     Board newBoard = board.clone();
                     Tile[][] newState = newBoard.getBoard();
-                    moveArmy(startX, startY, endX, endY, newState, TurnStatus.P1TURN);
-
+                    moveArmy(startX, startY, endX, endY, newState, TurnStatus.P1TURN, redArmies, greenArmies);
+//                    updateArmies(0, newState, redArmies, greenArmies);
                     double[] score = minimax(newBoard, depth - 1, 1, cloneArmies(redArmies), cloneArmies(greenArmies));
                     score[0] = startX; // curr starting x
                     score[1] = startY; // curr starting y
@@ -460,18 +460,18 @@ public class World {
             }
         } else {
             best[4] = Double.POSITIVE_INFINITY;
-            for(Army army : greenArmies){
+            for(int i = 0 ; i < greenArmies.size(); i++){
+                Army army = greenArmies.get(i);
                 int startX = army.getX();
                 int startY = army.getY();
                 List<int[]> adjacentCoords = getAdjacent(army.getX(), army.getY(), state);
                 for(int[] coords : adjacentCoords){
                     int endX = coords[0];
                     int endY = coords[1];
-
                     Board newBoard = board.clone();
                     Tile[][] newState = newBoard.getBoard();
-                    moveArmy(startX, startY, endX, endY, newState, TurnStatus.P2TURN);
-
+                    moveArmy(startX, startY, endX, endY, newState, TurnStatus.P2TURN, redArmies, greenArmies);
+//                    updateArmies(1, newState, redArmies, greenArmies);
                     double[] score = minimax(newBoard, depth - 1, 0, cloneArmies(redArmies), cloneArmies(greenArmies));
                     score[0] = startX; // curr starting x
                     score[1] = startY; // curr starting y
@@ -489,20 +489,28 @@ public class World {
         if(status != GameStatus.ACTIVE){
             return;
         }
-        double[] move = minimax(board, 2, 1, cloneArmies(redArmies), cloneArmies(greenArmies));
+        double[] move = minimax(board, 3, 1, cloneArmies(redArmies), cloneArmies(greenArmies));
         int startX = (int) move[0];
         int startY = (int) move[1];
         int endX = (int) move[2];
         int endY = (int) move[3];
-        moveArmy(startX, startY, endX, endY, board.getBoard(), TurnStatus.P2TURN);
+        moveArmy(startX, startY, endX, endY, board.getBoard(), TurnStatus.P2TURN, redArmies, greenArmies);
         System.out.println("AI has moved from " + board.getBoard()[startX][startY] + " to " + board.getBoard()[endX][endY]);
     }
-    private static List<Army> cloneArmies(List<Army> armies) {
+    public static List<Army> cloneArmies(List<Army> armies) {
         List<Army> clonedArmies = new LinkedList<>();
         for (Army originalArmy : armies) {
             Army clonedArmy = originalArmy.clone();
             clonedArmies.add(clonedArmy);
         }
         return clonedArmies;
+    }
+    public void executeMove(int x, int y) {
+        moveArmy(selectedTile.getX(), selectedTile.getY(), x, y, board.getBoard(), TurnStatus.P1TURN, redArmies, greenArmies);
+        checkVictory();
+        updateArmies(0, board.getBoard(), redArmies, greenArmies);
+        aiTurn();
+        checkVictory();
+        updateArmies(1, board.getBoard(), redArmies, greenArmies);
     }
 }
