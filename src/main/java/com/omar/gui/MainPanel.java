@@ -28,12 +28,7 @@ public class MainPanel extends JPanel {
     }
     public void updateLabel() {
         if (World.status == GameStatus.ACTIVE) {
-            if (World.whosturn == TurnStatus.P1TURN) {
-                statusLabel.setText("Redosia's move.");
-            } else {
-                statusLabel.setText("Greenland's move.");
-            }
-            movesLabel.setText("Turns remaining: " + World.numberOfMoves);
+            statusLabel.setText("Game active.");
         } else if (World.status == GameStatus.P1WINS) {
             statusLabel.setText("Redosia wins!");
         } else {

@@ -11,15 +11,6 @@ import java.util.*;
 
 import static com.omar.hex.HexConst.*;
 
-/**********************************
-  This is the main class of a Java program to play a game based on hexagonal tiles.
-  The mechanism of handling hexes is in the file hexmech.java.
-
-  Written by: M.H.
-  Date: December 2012
-
- ***********************************/
-
 public class HexGame {
 	private final World world;
 	private MainPanel mainPanel;
@@ -57,7 +48,6 @@ public class HexGame {
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 			super.paintComponent(g2);
-			world.updateTurn();
 			mainPanel.updateLabel();
 			for (int i = 0; i< MAPSIZE; i++) {
 				for (int j = 0; j< MAPSIZE; j++) {
@@ -101,20 +91,12 @@ public class HexGame {
 					world.selectArmy(clickedTile);
 				} else { // an army has already been selected and is about to be moved
 					System.out.println("Movement phase.");
-					world.moveArmy(world.selectedTile.getX(), world.selectedTile.getY(), p.x, p.y);
-					World.numberOfMoves--;
+					world.moveArmy(world.selectedTile.getX(), world.selectedTile.getY(), p.x, p.y, world.board.getBoard(), TurnStatus.P1TURN);
 					world.checkVictory();
-
-					// THIS IS WHERE THE AI WILL MAKE ITS MOVES
-					if(World.numberOfMoves == 0){
-						world.updateTurn();
-						while(World.numberOfMoves != 0){
-							world.aiTurn();
-							World.numberOfMoves--;
-							world.checkVictory();
-						}
-						world.updateTurn();
-					}
+					world.updateArmies(1, world.board.getBoard());
+					world.aiTurn();
+					world.checkVictory();
+					world.updateArmies(2, world.board.getBoard());
 				}
 			}
 		}
