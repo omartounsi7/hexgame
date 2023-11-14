@@ -397,29 +397,29 @@ public class World {
                 if(greenArmies.size() < 3){
                     numberOfMoves = greenArmies.size();
                 }
-                updateArmies(1);
+                updateArmies(1, board.getBoard());
                 whosturn = TurnStatus.P2TURN;
             } else if(whosturn == TurnStatus.P2TURN){
                 if(redArmies.size() < 3){
                     numberOfMoves = redArmies.size();
                 }
-                updateArmies(2);
+                updateArmies(2, board.getBoard());
                 whosturn = TurnStatus.P1TURN;
             }
             movedArmies.clear();
         }
     }
-    public void updateArmies(int faction){
+    public void updateArmies(int faction, Tile[][] state){
         for (int i = 0; i< MAPSIZE; i++){
             for (int j = 0; j< MAPSIZE; j++) {
-                if(getTile(i,j).getTileStatus().getValue() == faction && getTile(i,j).getCity() != null){
-                    Army occArmy = getTile(i,j).getOccupyingArmy();
+                if(state[i][j].getTileStatus().getValue() == faction && state[i][j].getCity() != null){
+                    Army occArmy = state[i][j].getOccupyingArmy();
                     if(occArmy == null){
                         Army newArmy = new Army(10, faction - 1, i, j);
-                        getTile(i,j).setOccupyingArmy(newArmy);
-                        if(getTile(i,j).getTileStatus() == TileStatus.P2OCCUPIED){
+                        state[i][j].setOccupyingArmy(newArmy);
+                        if(state[i][j].getTileStatus() == TileStatus.P2OCCUPIED){
                             greenArmies.add(newArmy);
-                        } else if(getTile(i,j).getTileStatus() == TileStatus.P1OCCUPIED){
+                        } else if(state[i][j].getTileStatus() == TileStatus.P1OCCUPIED){
                             redArmies.add(newArmy);
                         }
                     } else {
@@ -468,7 +468,7 @@ public class World {
     static int manhattanDist(int X1, int Y1, int X2, int Y2) {
         return Math.abs(X2 - X1) + Math.abs(Y2 - Y1);
     }
-    public double[] minimax(Board currBoard, int depth, int faction) {
+    public double[] minimax(Board currBoard, int depth, int faction, List<Army> redArmies, List<Army> greenArmies) {
         Tile[][] state = currBoard.getBoard();
 
         double[] best = new double[5];
@@ -499,7 +499,7 @@ public class World {
                     Tile[][] newState = newBoard.getBoard();
                     simulateMove(startX, startY, endX, endY, newState, 0);
 
-                    double[] score = minimax(newBoard, depth - 1, 1);
+                    double[] score = minimax(newBoard, depth - 1, 1, cloneArmies(redArmies), cloneArmies(greenArmies));
                     score[0] = startX; // curr starting x
                     score[1] = startY; // curr starting y
                     score[2] = endX; // curr ending x
@@ -526,7 +526,7 @@ public class World {
                     Tile[][] newState = newBoard.getBoard();
                     simulateMove(startX, startY, endX, endY, newState, 1);
 
-                    double[] score = minimax(newBoard, depth - 1, 0);
+                    double[] score = minimax(newBoard, depth - 1, 0, cloneArmies(redArmies), cloneArmies(greenArmies));
                     score[0] = startX; // curr starting x
                     score[1] = startY; // curr starting y
                     score[2] = endX; // curr ending x
@@ -543,13 +543,21 @@ public class World {
         if(status != GameStatus.ACTIVE){
             return;
         }
-        double[] move = minimax(board, 2, 1);
+        double[] move = minimax(board, 2, 1, cloneArmies(redArmies), cloneArmies(greenArmies));
         int startX = (int) move[0];
         int startY = (int) move[1];
         int endX = (int) move[2];
         int endY = (int) move[3];
         moveArmy(startX, startY, endX, endY);
         System.out.println("AI has moved from " + board.getBoard()[startX][startY] + " to " + board.getBoard()[endX][endY]);
+    }
+    private static List<Army> cloneArmies(List<Army> armies) {
+        List<Army> clonedArmies = new LinkedList<>();
+        for (Army originalArmy : armies) {
+            Army clonedArmy = originalArmy.clone();
+            clonedArmies.add(clonedArmy);
+        }
+        return clonedArmies;
     }
     public void simulateMove(int x, int y, int endX, int endY, Tile[][] state, int faction){
         Tile startTile = state[x][y];
