@@ -27,10 +27,8 @@ public class HexGame {
 		frame.setLocationRelativeTo(null);
 		frame.setLayout(new BorderLayout());
 		frame.setVisible(true);
-
 		DrawingPanel panel = new DrawingPanel();
 		frame.add(panel, BorderLayout.CENTER);
-
 		mainPanel = new MainPanel();
 		mainPanel.updateLabel();
 		frame.add(mainPanel, BorderLayout.NORTH);
@@ -78,14 +76,11 @@ public class HexGame {
 				if (p.x < 0 || p.y < 0 || p.x >= MAPSIZE || p.y >= MAPSIZE){
 					return;
 				}
-
 				if (World.status == GameStatus.P1WINS || World.status == GameStatus.P2WINS){
 					return;
 				}
-
 				Tile clickedTile = world.getTile(p.x, p.y);
 				System.out.println("You have clicked " + clickedTile);
-
 				if(world.selectedTile == null){ // we have yet to select an army
 					System.out.println("Selection phase.");
 					world.selectArmy(clickedTile);
