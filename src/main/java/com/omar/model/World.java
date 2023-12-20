@@ -8,8 +8,10 @@ import static com.omar.hex.HexConst.*;
 
 public class World {
     public Board board;
-    public static GameStatus status = GameStatus.ACTIVE;
-    public Tile selectedTile;
+    public static GameStatus gameStatus = GameStatus.ACTIVE;
+    public static TurnStatus turnStatus = TurnStatus.P1TURN;
+    public static boolean aiMode = true;
+    public static Tile selectedTile;
     private List<int[]> adjacentTiles;
     public World(){
         this.board = createMap();
@@ -46,7 +48,8 @@ public class World {
     }
     public void selectArmy(Tile startTile){
         if(startTile.getOccupyingArmy() != null){ // check if clicked tile contains an army
-            if(startTile.getTileStatus() == TileStatus.P1OCCUPIED){ // check if tile belongs to P1
+            if(turnStatus == TurnStatus.P1TURN && startTile.getTileStatus() == TileStatus.P1OCCUPIED ||
+                    turnStatus == TurnStatus.P2TURN && startTile.getTileStatus() == TileStatus.P2OCCUPIED){
                 selectedTile = startTile;
                 adjacentTiles = board.getAdjacent(startTile.getX(), startTile.getY());
                 for (int[] adjacentTile : adjacentTiles) {
@@ -55,33 +58,62 @@ public class World {
             }
         }
     }
-    public void executeMove(int x, int y) {
 
+    public void executeMove(int x, int y) {
         if(selectedTile.getX() == x && selectedTile.getY() == y){
             clearAdjTiles(board.getTiles());
             return;
         }
 
-        if(board.areAdjacent(selectedTile.getX(), selectedTile.getY(), x, y)){
-            board.moveArmy(selectedTile.getX(), selectedTile.getY(), x, y, TurnStatus.P1TURN);
-            clearAdjTiles(board.getTiles());
-
-            int isVictory = board.checkVictory();
-            if(isVictory == 2){
-                status = GameStatus.P2WINS;
-            } else if(isVictory == 1){
-                status = GameStatus.P1WINS;
+        if(aiMode){
+            if(board.areAdjacent(selectedTile.getX(), selectedTile.getY(), x, y)){
+                board.moveArmy(selectedTile.getX(), selectedTile.getY(), x, y, TurnStatus.P1TURN);
+                clearAdjTiles(board.getTiles());
+                int isVictory = board.checkVictory();
+                if(isVictory == 2){
+                    gameStatus = GameStatus.P2WINS;
+                } else if(isVictory == 1){
+                    gameStatus = GameStatus.P1WINS;
+                }
+                updateArmies(1, board.getTiles());
+                aiTurn();
+                isVictory = board.checkVictory();
+                if(isVictory == 2){
+                    gameStatus = GameStatus.P2WINS;
+                } else if(isVictory == 1){
+                    gameStatus = GameStatus.P1WINS;
+                }
+                updateArmies(2, board.getTiles());
             }
-            updateArmies(1, board.getTiles());
+        } else {
+            if(turnStatus == TurnStatus.P1TURN){
+                if(board.areAdjacent(selectedTile.getX(), selectedTile.getY(), x, y)){
+                    board.moveArmy(selectedTile.getX(), selectedTile.getY(), x, y, TurnStatus.P1TURN);
+                    clearAdjTiles(board.getTiles());
 
-            aiTurn();
-            isVictory = board.checkVictory();
-            if(isVictory == 2){
-                status = GameStatus.P2WINS;
-            } else if(isVictory == 1){
-                status = GameStatus.P1WINS;
+                    int isVictory = board.checkVictory();
+                    if(isVictory == 2){
+                        gameStatus = GameStatus.P2WINS;
+                    } else if(isVictory == 1){
+                        gameStatus = GameStatus.P1WINS;
+                    }
+                    updateArmies(1, board.getTiles());
+                    turnStatus = TurnStatus.P2TURN;
+                }
+            } else {
+                if(board.areAdjacent(selectedTile.getX(), selectedTile.getY(), x, y)){
+                    board.moveArmy(selectedTile.getX(), selectedTile.getY(), x, y, TurnStatus.P2TURN);
+                    clearAdjTiles(board.getTiles());
+                    int isVictory = board.checkVictory();
+                    if(isVictory == 2){
+                        gameStatus = GameStatus.P2WINS;
+                    } else if(isVictory == 1){
+                        gameStatus = GameStatus.P1WINS;
+                    }
+                    updateArmies(2, board.getTiles());
+                    turnStatus = TurnStatus.P1TURN;
+                }
             }
-            updateArmies(2, board.getTiles());
         }
     }
     public void clearAdjTiles(Tile[][] state){
@@ -112,7 +144,7 @@ public class World {
         }
     }
     public void aiTurn() {
-        if(status != GameStatus.ACTIVE){
+        if(gameStatus != GameStatus.ACTIVE){
             return;
         }
         board = AI.minimax(board, 4, 2, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);

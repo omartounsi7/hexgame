@@ -7,7 +7,6 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.event.*;
-import java.util.*;
 
 import static com.omar.hex.HexConst.*;
 
@@ -22,7 +21,7 @@ public class HexGame {
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		JFrame frame = new JFrame("HexWars");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(475, 775);
+		frame.setSize(430, 700);
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setLayout(new BorderLayout());
@@ -76,7 +75,7 @@ public class HexGame {
 				if (p.x < 0 || p.y < 0 || p.x >= MAPSIZE || p.y >= MAPSIZE){
 					return;
 				}
-				if (World.status == GameStatus.P1WINS || World.status == GameStatus.P2WINS){
+				if (World.gameStatus == GameStatus.P1WINS || World.gameStatus == GameStatus.P2WINS){
 					return;
 				}
 				Tile clickedTile = world.getTile(p.x, p.y);

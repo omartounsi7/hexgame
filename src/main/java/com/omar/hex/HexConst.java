@@ -12,6 +12,6 @@ public class HexConst {
     public final static Color P2ADJCOLOR = new Color(30, 240, 30);
     public final static Color TXTCOLOR = Color.BLACK;
     public final static int MAPSIZE = 6;
-    public final static int TILESIZE = 60;
+    public final static int TILESIZE = 70;
     public final static int BORDERS = 15;
 }
