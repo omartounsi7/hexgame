@@ -35,9 +35,9 @@ public class World {
                 }
             }
         }
-        Army firstRedArmy = new Army(10, 0);
+        Army firstRedArmy = new Army(10, 1);
         tiles[0][0].setOccupyingArmy(firstRedArmy);
-        Army firstGreenArmy = new Army(10, 1);
+        Army firstGreenArmy = new Army(10, 2);
         tiles[MAPSIZE - 1][MAPSIZE - 1].setOccupyingArmy(firstGreenArmy);
         tiles[0][0].setTileStatus(TileStatus.P1OCCUPIED);
         tiles[MAPSIZE - 1][MAPSIZE - 1].setTileStatus(TileStatus.P2OCCUPIED);
@@ -288,7 +288,7 @@ public class World {
             } else if(isVictory == 1){
                 status = GameStatus.P1WINS;
             }
-            updateArmies(0, board.getBoard());
+            updateArmies(1, board.getBoard());
 
             aiTurn();
             isVictory = checkVictory(board.getBoard());
@@ -297,7 +297,7 @@ public class World {
             } else if(isVictory == 1){
                 status = GameStatus.P1WINS;
             }
-            updateArmies(1, board.getBoard());
+            updateArmies(2, board.getBoard());
         }
     }
     public void clearAdjTiles(Tile[][] state){
