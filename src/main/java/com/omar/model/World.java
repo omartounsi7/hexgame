@@ -35,9 +35,9 @@ public class World {
                 }
             }
         }
-        Army firstRedArmy = new Army(10, 0, 0, 0);
+        Army firstRedArmy = new Army(10, 0);
         tiles[0][0].setOccupyingArmy(firstRedArmy);
-        Army firstGreenArmy = new Army(10, 1, MAPSIZE - 1, MAPSIZE - 1);
+        Army firstGreenArmy = new Army(10, 1);
         tiles[MAPSIZE - 1][MAPSIZE - 1].setOccupyingArmy(firstGreenArmy);
         tiles[0][0].setTileStatus(TileStatus.P1OCCUPIED);
         tiles[MAPSIZE - 1][MAPSIZE - 1].setTileStatus(TileStatus.P2OCCUPIED);
@@ -317,8 +317,6 @@ public class World {
         if(defArmy == null){ // movement
             startTile.setOccupyingArmy(null);
             endTile.setOccupyingArmy(offArmy);
-            offArmy.setX(endX);
-            offArmy.setY(endY);
             if(whosturn == TurnStatus.P1TURN){
                 endTile.setTileStatus(TileStatus.P1OCCUPIED);
             } else if(whosturn == TurnStatus.P2TURN){
@@ -341,8 +339,6 @@ public class World {
             } else {
                 offArmy.setFirepower(offArmy.getFirepower() - defArmy.getFirepower());
                 endTile.setOccupyingArmy(offArmy);
-                offArmy.setX(endX);
-                offArmy.setY(endY);
                 if(whosturn == TurnStatus.P1TURN){
                     endTile.setTileStatus(TileStatus.P1OCCUPIED);
                 } else if(whosturn == TurnStatus.P2TURN){
@@ -366,7 +362,7 @@ public class World {
                 if(state[i][j].getTileStatus().getValue() == faction && state[i][j].getCity() != null){
                     Army occArmy = state[i][j].getOccupyingArmy();
                     if(occArmy == null){
-                        Army newArmy = new Army(10, faction, i, j);
+                        Army newArmy = new Army(10, faction);
                         state[i][j].setOccupyingArmy(newArmy);
                     } else {
                         int currFp = occArmy.getFirepower();
