@@ -8,14 +8,10 @@ import static com.omar.hex.HexConst.*;
 
 public class World {
     public Board board;
-    private final List<Army> redArmies;
-    private final List<Army> greenArmies;
     public static GameStatus status = GameStatus.ACTIVE;
     public Tile selectedTile;
     private List<int[]> adjacentTiles;
-    public World(List<Army> redArmies, List<Army> greenArmies){
-        this.redArmies = redArmies;
-        this.greenArmies = greenArmies;
+    public World(){
         this.board = createMap();
     }
     public Tile getTile(int x, int y) {
@@ -40,10 +36,8 @@ public class World {
             }
         }
         Army firstRedArmy = new Army(10, 0, 0, 0);
-        redArmies.add(firstRedArmy);
         tiles[0][0].setOccupyingArmy(firstRedArmy);
         Army firstGreenArmy = new Army(10, 1, MAPSIZE - 1, MAPSIZE - 1);
-        greenArmies.add(firstGreenArmy);
         tiles[MAPSIZE - 1][MAPSIZE - 1].setOccupyingArmy(firstGreenArmy);
         tiles[0][0].setTileStatus(TileStatus.P1OCCUPIED);
         tiles[MAPSIZE - 1][MAPSIZE - 1].setTileStatus(TileStatus.P2OCCUPIED);
@@ -285,7 +279,7 @@ public class World {
     }
     public void executeMove(int x, int y) {
         if(areAdjacent(selectedTile.getX(), selectedTile.getY(), x, y)){
-            moveArmy(selectedTile.getX(), selectedTile.getY(), x, y, board.getBoard(), TurnStatus.P1TURN, redArmies, greenArmies);
+            moveArmy(selectedTile.getX(), selectedTile.getY(), x, y, board.getBoard(), TurnStatus.P1TURN);
             clearAdjTiles(board.getBoard());
 
             int isVictory = checkVictory(board.getBoard());
@@ -294,7 +288,7 @@ public class World {
             } else if(isVictory == 1){
                 status = GameStatus.P1WINS;
             }
-            updateArmies(0, board.getBoard(), redArmies, greenArmies);
+            updateArmies(0, board.getBoard());
 
             aiTurn();
             isVictory = checkVictory(board.getBoard());
@@ -303,7 +297,7 @@ public class World {
             } else if(isVictory == 1){
                 status = GameStatus.P1WINS;
             }
-            updateArmies(1, board.getBoard(), redArmies, greenArmies);
+            updateArmies(1, board.getBoard());
         }
     }
     public void clearAdjTiles(Tile[][] state){
@@ -313,7 +307,7 @@ public class World {
         }
         adjacentTiles.clear();
     }
-    public void moveArmy(int x, int y, int endX, int endY, Tile[][] state, TurnStatus whosturn, List<Army> redArmies, List<Army> greenArmies) {
+    public void moveArmy(int x, int y, int endX, int endY, Tile[][] state, TurnStatus whosturn) {
         Tile startTile = state[x][y];
         Tile endTile = state[endX][endY];
 
@@ -339,27 +333,12 @@ public class World {
             } else {
                 defArmy.setFirepower(currFp + inFp);
                 startTile.setOccupyingArmy(null);
-                if(startTile.getTileStatus() == TileStatus.P2OCCUPIED){
-                    greenArmies.remove(offArmy);
-                } else if(startTile.getTileStatus() == TileStatus.P1OCCUPIED){
-                    redArmies.remove(offArmy);
-                }
             }
         } else { // combat
             startTile.setOccupyingArmy(null);
             if(defArmy.getFirepower() >= offArmy.getFirepower()){
                 defArmy.setFirepower(defArmy.getFirepower() - offArmy.getFirepower() + 1);
-                if(startTile.getTileStatus() == TileStatus.P2OCCUPIED){
-                    greenArmies.remove(offArmy);
-                }  else if(startTile.getTileStatus() == TileStatus.P1OCCUPIED){
-                    redArmies.remove(offArmy);
-                }
             } else {
-                if(endTile.getTileStatus() == TileStatus.P2OCCUPIED){
-                    greenArmies.remove(defArmy);
-                }  else if(endTile.getTileStatus() == TileStatus.P1OCCUPIED){
-                    redArmies.remove(defArmy);
-                }
                 offArmy.setFirepower(offArmy.getFirepower() - defArmy.getFirepower());
                 endTile.setOccupyingArmy(offArmy);
                 offArmy.setX(endX);
@@ -381,7 +360,7 @@ public class World {
         }
         return 0;
     }
-    public void updateArmies(int faction, Tile[][] state, List<Army> redArmies, List<Army> greenArmies){
+    public void updateArmies(int faction, Tile[][] state){
         for (int i = 0; i< MAPSIZE; i++){
             for (int j = 0; j< MAPSIZE; j++) {
                 if(state[i][j].getTileStatus().getValue() == faction && state[i][j].getCity() != null){
@@ -389,11 +368,6 @@ public class World {
                     if(occArmy == null){
                         Army newArmy = new Army(10, faction, i, j);
                         state[i][j].setOccupyingArmy(newArmy);
-                        if(state[i][j].getTileStatus() == TileStatus.P2OCCUPIED){
-                            greenArmies.add(newArmy);
-                        } else if(state[i][j].getTileStatus() == TileStatus.P1OCCUPIED){
-                            redArmies.add(newArmy);
-                        }
                     } else {
                         int currFp = occArmy.getFirepower();
                         if(currFp + 10 >= 100){
@@ -418,19 +392,7 @@ public class World {
         int endX = MAPSIZE - 2;
         int endY = MAPSIZE - 1;
 
-        moveArmy(startX, startY, endX, endY, board.getBoard(), TurnStatus.P2TURN, redArmies, greenArmies);
+        moveArmy(startX, startY, endX, endY, board.getBoard(), TurnStatus.P2TURN);
         System.out.println("AI has moved from " + board.getBoard()[startX][startY] + " to " + board.getBoard()[endX][endY]);
-    }
-
-    static int manhattanDist(int X1, int Y1, int X2, int Y2) {
-        return Math.abs(X2 - X1) + Math.abs(Y2 - Y1);
-    }
-    public static List<Army> cloneArmies(List<Army> armies) {
-        List<Army> clonedArmies = new LinkedList<>();
-        for (Army originalArmy : armies) {
-            Army clonedArmy = originalArmy.clone();
-            clonedArmies.add(clonedArmy);
-        }
-        return clonedArmies;
     }
 }

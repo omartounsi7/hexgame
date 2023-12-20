@@ -15,7 +15,7 @@ public class HexGame {
 	private final World world;
 	private MainPanel mainPanel;
 	public HexGame() {
-		world = new World(new LinkedList<>(), new LinkedList<>());
+		world = new World();
 		createAndShowGUI();
 	}
 	private void createAndShowGUI() {
