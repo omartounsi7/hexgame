@@ -1,6 +1,6 @@
 package com.omar.model;
 
-public class Army {
+public class Army implements Cloneable {
     private int firepower;
     private final int ownerFaction;
     public Army(int firepower, int ownerFaction) {
@@ -18,6 +18,14 @@ public class Army {
     }
     @Override
     public String toString() {
-        return "Firepower = " + firepower;
+        return "FP = " + firepower;
+    }
+    @Override
+    public Army clone() {
+        try {
+            return (Army) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(e);
+        }
     }
 }

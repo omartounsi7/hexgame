@@ -9,26 +9,7 @@ import static com.omar.hex.HexConst.*;
 
 public class HexMech
 {
-  /* Helpful references: 
-http://www.codeproject.com/Articles/14948/Hexagonal-grid-for-games-and-other-projects-Part-1
-http://weblogs.java.net/blog/malenkov/archive/2009/02/hexagonal_tile.html
-http://www.tonypa.pri.ee/tbw/tut25.html
-	 */
-
-	/*
-#define HEXEAST 0
-#define HEXSOUTHEAST 1
-#define HEXSOUTHWEST 2
-#define HEXWEST 3
-#define HEXNORTHWEST 4
-#define HEXNORTHEAST 5
-	 */
-
 	//Constants
-	public final static boolean orFLAT= true;
-	public final static boolean orPOINT= false;
-	public static boolean ORIENT= orFLAT;  //this is not used. We're never going to do pointy orientation
-
 	public static boolean XYVertex=true;	//true: x,y are the co-ords of the first vertex.
 	//false: x,y are the co-ords of the top left rect. co-ord.
 
@@ -85,7 +66,7 @@ and calculates all six of the points in the hexagon.
 
 		int[] cx,cy;
 
-//I think that this XYvertex stuff is taken care of in the int x line above. Why is it here twice?
+		//I think that this XYvertex stuff is taken care of in the int x line above. Why is it here twice?
 		if (XYVertex) 
 			cx = new int[] {x,x+s,x+s+t,x+s,x,x-t};  //this is for the top left vertex being at x,y. Which means that some of the hex is cutoff.
 		else
@@ -93,17 +74,6 @@ and calculates all six of the points in the hexagon.
 
 		cy = new int[] {y,y,y+r,y+r+r,y+r+r,y+r};
 		return new Polygon(cx,cy,6);
-
-		/*
-		   x=200;
-		   poly = new Polygon();
-		   poly.addPoint(x,y);
-		   poly.addPoint(x+s,y);
-		   poly.addPoint(x+s+t,y+r);
-		   poly.addPoint(x+s,y+r+r);
-		   poly.addPoint(x,y+r+r);
-		   poly.addPoint(x-t,y+r);
-		 */
 	}
 
 /********************************************************************
@@ -139,7 +109,7 @@ The hexagon is drawn in the colour specified in hexgame.COLOURELL.
 	  The colour is set by hexgame.COLOURONE and hexgame.COLOURTWO.
 	  The value of n is converted to letter and drawn in the hexagon.
 *****************************************************************************/
-	public static void fillHex(int i, int j, TileStatus status, Graphics2D g2, String str1, String str2, Boolean selected) {
+	public static void fillHex(int i, int j, TileStatus status, Graphics2D g2, String str1, String str2, Boolean selected, Boolean adj) {
 		int x = i * (s+t);
 		int y = j * h + (i%2) * h/2;
 
@@ -155,6 +125,10 @@ The hexagon is drawn in the colour specified in hexgame.COLOURELL.
 			}
 		} else {
 			g2.setColor(EMPTYCOLOR);
+		}
+
+		if(adj && !selected){
+			g2.setColor(Color.YELLOW);
 		}
 
 
