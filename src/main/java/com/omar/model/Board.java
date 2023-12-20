@@ -222,6 +222,116 @@ public class Board implements Cloneable {
         }
         return adj;
     }
+    public Tile getTile(int x, int y) {
+        return tiles[x][y];
+    }
+    public boolean areAdjacent(int endX, int endY, int x, int y){
+        if (endX == x) {
+            if(endY == y - 1 || endY == y + 1){
+                return true;
+            }
+            if(endY == y - 2){
+                return getTile(x,y - 1).getOccupyingArmy() == null;
+            }
+            if(endY == y + 2){
+                return getTile(x,y + 1).getOccupyingArmy() == null;
+            }
+        }
+
+        if(x % 2 == 1){ // odd column
+            if(endX == x - 1){
+                if(endY == y || endY == y + 1){
+                    return true;
+                }
+                if(endY == y - 1){
+                    return getTile(x - 1,y).getOccupyingArmy() == null || getTile(x,y - 1).getOccupyingArmy() == null;
+                }
+                if(endY == y + 2){
+                    return getTile(x - 1,y + 1).getOccupyingArmy() == null || getTile(x,y + 1).getOccupyingArmy() == null;
+                }
+            }
+            if(endX == x + 1){
+                if(endY == y || endY == y + 1){
+                    return true;
+                }
+                if(endY == y - 1){
+                    return getTile(x,y - 1).getOccupyingArmy() == null || getTile(x + 1,y).getOccupyingArmy() == null;
+                }
+                if(endY == y + 2){
+                    return getTile(x,y + 1).getOccupyingArmy() == null || getTile(x + 1,y + 1).getOccupyingArmy() == null;
+                }
+            }
+            if(endX == x - 2) {
+                if(endY == y){
+                    return getTile(x - 1,y).getOccupyingArmy() == null || (y + 1 < MAPSIZE && getTile(x - 1,y + 1).getOccupyingArmy() == null); // HERE!
+                }
+                if(endY == y - 1){
+                    return getTile(x - 1,y).getOccupyingArmy() == null;
+                }
+                if(endY == y + 1){
+                    return getTile(x - 1,y + 1).getOccupyingArmy() == null;
+                }
+            }
+            if(endX == x + 2) {
+                if(endY == y){
+                    return getTile(x + 1,y).getOccupyingArmy() == null || (y + 1 < MAPSIZE && getTile(x + 1,y + 1).getOccupyingArmy() == null); // HERE!
+                }
+                if(endY == y - 1){
+                    return getTile(x + 1,y).getOccupyingArmy() == null;
+                }
+                if(endY == y + 1){
+                    return getTile(x + 1,y + 1).getOccupyingArmy() == null;
+                }
+            }
+
+        } else { // even column
+            if(endX == x - 1){
+                if(endY == y || endY == y - 1){
+                    return true;
+                }
+                if(endY == y - 2){
+                    return getTile(x - 1,y - 1).getOccupyingArmy() == null || getTile(x,y - 1).getOccupyingArmy() == null;
+                }
+                if(endY == y + 1){
+                    return getTile(x - 1,y).getOccupyingArmy() == null || getTile(x,y + 1).getOccupyingArmy() == null;
+                }
+            }
+            if(endX == x + 1){
+                if(endY == y || endY == y - 1){
+                    return true;
+                }
+                if(endY == y - 2){
+                    return getTile(x + 1,y - 1).getOccupyingArmy() == null || getTile(x,y - 1).getOccupyingArmy() == null;
+                }
+                if(endY == y + 1){
+                    return getTile(x + 1,y).getOccupyingArmy() == null || getTile(x,y + 1).getOccupyingArmy() == null;
+                }
+            }
+            if(endX == x - 2) {
+                if(endY == y){
+                    return getTile(x - 1,y).getOccupyingArmy() == null || (y - 1 >= 0 && getTile(x - 1,y - 1).getOccupyingArmy() == null); // HERE!
+                }
+                if(endY == y - 1){
+                    return getTile(x - 1,y - 1).getOccupyingArmy() == null;
+                }
+                if(endY == y + 1){
+                    return getTile(x - 1,y).getOccupyingArmy() == null;
+                }
+            }
+            if(endX == x + 2) {
+                if(endY == y){
+                    return getTile(x + 1,y).getOccupyingArmy() == null || (y - 1 >= 0 && getTile(x + 1,y - 1).getOccupyingArmy() == null); // HERE!
+                }
+                if(endY == y - 1){
+                    return getTile(x + 1,y - 1).getOccupyingArmy() == null;
+                }
+                if(endY == y + 1){
+                    return getTile(x + 1,y).getOccupyingArmy() == null;
+                }
+            }
+        }
+        return false;
+    }
     @Override
     public Board clone() {
         Tile[][] clonedBoard = new Tile[MAPSIZE][MAPSIZE];

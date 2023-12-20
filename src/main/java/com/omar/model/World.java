@@ -15,7 +15,7 @@ public class World {
         this.board = createMap();
     }
     public Tile getTile(int x, int y) {
-        return board.getTiles()[x][y];
+        return board.getTile(x,y);
     }
     private Board createMap(){
         HexMech.setXYasVertex(false);
@@ -44,113 +44,6 @@ public class World {
 
         return new Board(tiles);
     }
-    public boolean areAdjacent(int endX, int endY, int x, int y){
-        if (endX == x) {
-            if(endY == y - 1 || endY == y + 1){
-                return true;
-            }
-            if(endY == y - 2){
-                return getTile(x,y - 1).getOccupyingArmy() == null;
-            }
-            if(endY == y + 2){
-                return getTile(x,y + 1).getOccupyingArmy() == null;
-            }
-        }
-
-        if(x % 2 == 1){ // odd column
-            if(endX == x - 1){
-                if(endY == y || endY == y + 1){
-                    return true;
-                }
-                if(endY == y - 1){
-                    return getTile(x - 1,y).getOccupyingArmy() == null || getTile(x,y - 1).getOccupyingArmy() == null;
-                }
-                if(endY == y + 2){
-                    return getTile(x - 1,y + 1).getOccupyingArmy() == null || getTile(x,y + 1).getOccupyingArmy() == null;
-                }
-            }
-            if(endX == x + 1){
-                if(endY == y || endY == y + 1){
-                    return true;
-                }
-                if(endY == y - 1){
-                    return getTile(x,y - 1).getOccupyingArmy() == null || getTile(x + 1,y).getOccupyingArmy() == null;
-                }
-                if(endY == y + 2){
-                    return getTile(x,y + 1).getOccupyingArmy() == null || getTile(x + 1,y + 1).getOccupyingArmy() == null;
-                }
-            }
-            if(endX == x - 2) {
-                if(endY == y){
-                    return getTile(x - 1,y).getOccupyingArmy() == null || (y + 1 < MAPSIZE && getTile(x - 1,y + 1).getOccupyingArmy() == null); // HERE!
-                }
-                if(endY == y - 1){
-                    return getTile(x - 1,y).getOccupyingArmy() == null;
-                }
-                if(endY == y + 1){
-                    return getTile(x - 1,y + 1).getOccupyingArmy() == null;
-                }
-            }
-            if(endX == x + 2) {
-                if(endY == y){
-                    return getTile(x + 1,y).getOccupyingArmy() == null || (y + 1 < MAPSIZE && getTile(x + 1,y + 1).getOccupyingArmy() == null); // HERE!
-                }
-                if(endY == y - 1){
-                    return getTile(x + 1,y).getOccupyingArmy() == null;
-                }
-                if(endY == y + 1){
-                    return getTile(x + 1,y + 1).getOccupyingArmy() == null;
-                }
-            }
-
-        } else { // even column
-            if(endX == x - 1){
-                if(endY == y || endY == y - 1){
-                    return true;
-                }
-                if(endY == y - 2){
-                    return getTile(x - 1,y - 1).getOccupyingArmy() == null || getTile(x,y - 1).getOccupyingArmy() == null;
-                }
-                if(endY == y + 1){
-                    return getTile(x - 1,y).getOccupyingArmy() == null || getTile(x,y + 1).getOccupyingArmy() == null;
-                }
-            }
-            if(endX == x + 1){
-                if(endY == y || endY == y - 1){
-                    return true;
-                }
-                if(endY == y - 2){
-                    return getTile(x + 1,y - 1).getOccupyingArmy() == null || getTile(x,y - 1).getOccupyingArmy() == null;
-                }
-                if(endY == y + 1){
-                    return getTile(x + 1,y).getOccupyingArmy() == null || getTile(x,y + 1).getOccupyingArmy() == null;
-                }
-            }
-            if(endX == x - 2) {
-                if(endY == y){
-                    return getTile(x - 1,y).getOccupyingArmy() == null || (y - 1 >= 0 && getTile(x - 1,y - 1).getOccupyingArmy() == null); // HERE!
-                }
-                if(endY == y - 1){
-                    return getTile(x - 1,y - 1).getOccupyingArmy() == null;
-                }
-                if(endY == y + 1){
-                    return getTile(x - 1,y).getOccupyingArmy() == null;
-                }
-            }
-            if(endX == x + 2) {
-                if(endY == y){
-                    return getTile(x + 1,y).getOccupyingArmy() == null || (y - 1 >= 0 && getTile(x + 1,y - 1).getOccupyingArmy() == null); // HERE!
-                }
-                if(endY == y - 1){
-                    return getTile(x + 1,y - 1).getOccupyingArmy() == null;
-                }
-                if(endY == y + 1){
-                    return getTile(x + 1,y).getOccupyingArmy() == null;
-                }
-            }
-        }
-        return false;
-    }
     public void selectArmy(Tile startTile){
         if(startTile.getOccupyingArmy() != null){ // check if clicked tile contains an army
             if(startTile.getTileStatus() == TileStatus.P1OCCUPIED){ // check if tile belongs to P1
@@ -163,7 +56,13 @@ public class World {
         }
     }
     public void executeMove(int x, int y) {
-        if(areAdjacent(selectedTile.getX(), selectedTile.getY(), x, y)){
+
+        if(selectedTile.getX() == x && selectedTile.getY() == y){
+            clearAdjTiles(board.getTiles());
+            return;
+        }
+
+        if(board.areAdjacent(selectedTile.getX(), selectedTile.getY(), x, y)){
             board.moveArmy(selectedTile.getX(), selectedTile.getY(), x, y, TurnStatus.P1TURN);
             clearAdjTiles(board.getTiles());
 
@@ -216,6 +115,6 @@ public class World {
         if(status != GameStatus.ACTIVE){
             return;
         }
-        board = AI.minimax(board, 4, 2);
+        board = AI.minimax(board, 4, 2, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
     }
 }

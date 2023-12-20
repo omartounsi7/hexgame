@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class AI {
-    public static Board minimax(Board currState, int depth, int faction){
+    public static Board minimax(Board currState, int depth, int faction, double alpha, double beta){
         if(depth == 0 || currState.checkVictory() != 0){
             currState.evaluate();
             System.out.print("Score is: ");
@@ -17,10 +17,14 @@ public class AI {
             double maxEval = Double.NEGATIVE_INFINITY;
             List<Board> possStates = getPossibleStates(currState, faction);
             for(Board possState : possStates){
-                double eval = minimax(possState, depth - 1, 2).getScore();
+                double eval = minimax(possState, depth - 1, 2, alpha, beta).getScore();
                 maxEval = Math.max(maxEval, eval);
                 if (maxEval == eval){
                     bestState = possState;
+                }
+                alpha = Math.max(alpha, eval);
+                if (beta <= alpha) {
+                    break;
                 }
             }
 
@@ -28,10 +32,14 @@ public class AI {
             double minEval = Double.POSITIVE_INFINITY;
             List<Board> possStates = getPossibleStates(currState, faction);
             for(Board possState : possStates){
-                double eval = minimax(possState, depth - 1, 1).getScore();
+                double eval = minimax(possState, depth - 1, 1, alpha, beta).getScore();
                 minEval = Math.min(minEval, eval);
                 if (minEval == eval){
                     bestState = possState;
+                }
+                beta = Math.min(beta, eval);
+                if (beta <= alpha) {
+                    break;
                 }
             }
         }
